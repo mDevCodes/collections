@@ -1,12 +1,16 @@
+import Image from "next/image";
+
 export default function NavBar() {
   return (
-    <div>
-      <h1>Collections</h1>
-      {/* <Image
-            src=""
-            width={500}
-            height={500} />
-             alt="User profile picture"/> */}
+    <div className="flex font-secondary space-x-3">
+      <h1 className="text-4xl">Collections</h1>
+      <Image
+        src="/../public/images/profile-picture.jpg"
+        width={50}
+        height={50}
+        alt="User profile picture"
+        className="rounded-full"
+      />
     </div>
   );
 }
