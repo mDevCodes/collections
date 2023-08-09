@@ -8,12 +8,7 @@ export const getData = async () => {
   //   const search = "people/2/";
   //   const url = baseUrl + search;
 
-  //   const res = await fetch(url);
-  //   const data = await res.json();
-  //   return console.log(data.results.title);
-  return (
-    <div>
-      <h1>{data.results}</h1>
-    </div>
-  );
+  const res = await fetch(url);
+  const data = await res.json();
+  return data;
 };
