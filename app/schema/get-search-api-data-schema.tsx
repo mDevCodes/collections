@@ -12,3 +12,5 @@ const ResultsArraySchema = z.array(SingleResultSchema);
 const SearchSchema = z.object({
   results: ResultsArraySchema,
 });
+
+export default SearchSchema;

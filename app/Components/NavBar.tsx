@@ -2,8 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default function NavBar() {
-  // return <p>test</p>;
-
   return (
     <div className="flex justify-between items-center font-secondary border-b-2 border-white p-4">
       <Link href="/">
