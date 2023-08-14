@@ -1,9 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Lobster } from "next/font/google";
+
+const lobster = Lobster({ weight: "400", subsets: ["latin"] });
 
 export default function NavBar() {
   return (
-    <div className="flex justify-between items-center font-secondary border-b-2 border-white p-4">
+    <header
+      className={`flex justify-between items-center border-b-2 border-white p-4 ${lobster.className}`}
+    >
       <Link href="/">
         <svg
           className="h-7 w-7"
@@ -32,6 +37,6 @@ export default function NavBar() {
           className="rounded-full"
         />
       </Link>
-    </div>
+    </header>
   );
 }
