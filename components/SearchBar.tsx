@@ -17,8 +17,8 @@ export default function SearchBar() {
       </svg>
       <input
         type="text"
-        placeholder="Search for your favorite records "
-        className="w-5/6 p-3 pl-14 rounded-full text-black  "
+        placeholder="Search for your favorite records"
+        className="w-5/6 p-3 pl-14 rounded-full text-black"
       />
       <button className="ml-8 p-4 border-2 rounded-full">Search</button>
     </div>
