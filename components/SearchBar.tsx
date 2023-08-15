@@ -3,7 +3,14 @@ import Icon from "./Icon";
 export default function SearchBar() {
   return (
     <div className="m-auto w-3/4 flex justify-center mt-10 relative">
-      <Icon type="search" />
+      <Icon
+        type="search"
+        positionProps={{
+          position: "absolute",
+          bottom: "bottom-5",
+          left: "left-5",
+        }}
+      />
       <input
         type="text"
         placeholder="Search for your favorite records"

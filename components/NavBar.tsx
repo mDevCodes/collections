@@ -11,7 +11,14 @@ export default function NavBar() {
       className={`flex justify-between items-center border-b-2 border-white p-4 ${lobster.className}`}
     >
       <Link href="/">
-        <Icon type="home" />
+        <Icon
+          type="home"
+          positionProps={{
+            position: "absolute",
+            bottom: "bottom-5",
+            left: "left-5",
+          }}
+        />
       </Link>
 
       <Link href="/">
