@@ -1,14 +1,16 @@
-export const getData = async () => {
-  const baseUrl = "https://api.discogs.com/database/search?q=";
-  const search = "Nirvana";
-  const token = `token=${process.env.DISCOGS_API_KEY}`;
-  const url = baseUrl + search + "&" + token;
-
-  //   const baseUrl = "https://swapi.dev/api/";
-  //   const search = "people/2/";
-  //   const url = baseUrl + search;
-
-  const res = await fetch(url);
-  const data = await res.json();
-  return data;
+const discogs = {
+  search: async () => {
+    const baseUrl = "https://api.discogs.com/database/search?";
+    const paramsObj = {
+      q: "Nirvana",
+      type: "release",
+      token: process.env.DISCOGS_API_KEY!,
+    };
+    const searchParams = new URLSearchParams(paramsObj);
+    const url = baseUrl + searchParams;
+    const result = await fetch(url);
+    return result.json();
+  },
 };
+
+export default discogs;

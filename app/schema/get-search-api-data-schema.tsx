@@ -3,7 +3,8 @@ import z from "zod";
 const SearchSchema = z.object({
   results: z.array(
     z.object({
-      year: z.string(),
+      format: z.array(z.literal("Vinyl")) | formats: z.array(z.literal("Vinyl")),
+      year: z.optional(z.string()),
     })
   ),
 });
