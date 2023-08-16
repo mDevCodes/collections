@@ -1,4 +1,4 @@
-import SearchSchema from "../schema/get-search-api-data-schema";
+import { SearchResponseSchema } from "./discogs.schemas";
 
 const discogs = {
   search: async () => {
@@ -18,7 +18,7 @@ const discogs = {
     console.log("🚀 ~ file: SearchApi.tsx:18 ~ search: ~ data:", data);
 
     // schema check using Zod
-    SearchSchema.parse(data);
+    SearchResponseSchema.parse(data);
 
     return data;
   },
