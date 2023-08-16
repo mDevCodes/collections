@@ -11,7 +11,7 @@ export default function NavBar() {
       className={`flex justify-between items-center border-b-2 border-white p-4 ${lobster.className}`}
     >
       <Link href="/">
-        <Icon type="home" size="w-7 h-7" />
+        <Icon type="home" size="medium" />
       </Link>
 
       <Link href="/">

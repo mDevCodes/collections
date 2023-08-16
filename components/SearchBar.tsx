@@ -3,7 +3,11 @@ import Icon from "./Icon";
 export default function SearchBar() {
   return (
     <div className="m-auto w-3/4 flex justify-center mt-10 relative">
-      <Icon type="search" className="absolute bottom-5 left-5" size="w-7 h-7" />
+      <Icon
+        type="search"
+        className="absolute top-5 left-16 text-black"
+        size="small"
+      />
       <input
         type="text"
         placeholder="Search for your favorite records"
