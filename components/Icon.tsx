@@ -6,24 +6,17 @@ type Props = {
   size?: "small" | "medium";
 };
 
-export default function Icon({ type, className, size }: Props) {
-  const sizes = {
-    small: "h-5 w-5",
-    medium: "h-7 w-7",
-  };
+const sizes = {
+  small: "h-5 w-5",
+  medium: "h-7 w-7",
+};
 
-  const sizeClass =
-    size === "small"
-      ? sizes.small
-      : size === "medium"
-      ? sizes.medium
-      : undefined;
-
+export default function Icon({ type, className, size = "medium" }: Props) {
   if (type === "home") {
     return (
       <>
         <svg
-          className={clsx(sizeClass, className)}
+          className={clsx(sizes[size], className)}
           viewBox="0 0 24 24"
           stroke="currentColor"
           strokeWidth={1.5}
@@ -42,7 +35,7 @@ export default function Icon({ type, className, size }: Props) {
     return (
       <>
         <svg
-          className={clsx(size, className)}
+          className={clsx(sizes[size], className)}
           fill="none"
           strokeWidth={1.5}
           stroke="currentColor"
