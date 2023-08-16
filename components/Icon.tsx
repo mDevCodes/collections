@@ -1,21 +1,17 @@
 import clsx from "clsx";
+
 type Props = {
   type: "home" | "search";
-  positionProps?: {
-    position?: "static" | "fixed" | "absolute" | "relative" | "sticky";
-    top?: string;
-    right?: string;
-    bottom?: string;
-    left?: string;
-  };
+  className?: string;
+  size?: string;
 };
 
-export default function Icon({ type, positionProps }: Props) {
+export default function Icon({ type, className, size }: Props) {
   if (type === "home") {
     return (
       <>
         <svg
-          className={`w-7 h-7 ${clsx(positionProps)}`}
+          className={clsx(size, className)}
           viewBox="0 0 24 24"
           stroke="currentColor"
           strokeWidth={1.5}
@@ -28,11 +24,12 @@ export default function Icon({ type, positionProps }: Props) {
         </svg>
       </>
     );
-  } else if (type === "search") {
+  }
+  if (type === "search") {
     return (
       <>
         <svg
-          className={`w-5 h-5 ${clsx(positionProps)}`}
+          className={clsx(size, className)}
           fill="none"
           strokeWidth={1.5}
           stroke="currentColor"
@@ -46,4 +43,5 @@ export default function Icon({ type, positionProps }: Props) {
       </>
     );
   }
+  return null;
 }
