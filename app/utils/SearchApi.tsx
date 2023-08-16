@@ -1,5 +1,8 @@
+import SearchSchema from "../schema/get-search-api-data-schema";
+
 const discogs = {
   search: async () => {
+    // define url for GET API call
     const baseUrl = "https://api.discogs.com/database/search?";
     const paramsObj = {
       q: "Nirvana",
@@ -8,8 +11,16 @@ const discogs = {
     };
     const searchParams = new URLSearchParams(paramsObj);
     const url = baseUrl + searchParams;
+
+    // GET call to Discogs API
     const result = await fetch(url);
-    return result.json();
+    const data = await result.json();
+    console.log("🚀 ~ file: SearchApi.tsx:18 ~ search: ~ data:", data);
+
+    // schema check using Zod
+    SearchSchema.parse(data);
+
+    return data;
   },
 };
 
