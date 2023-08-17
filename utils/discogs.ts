@@ -11,14 +11,17 @@ const discogs = {
     };
     const searchParams = new URLSearchParams(paramsObj);
     const url = baseUrl + searchParams;
+    console.log("🚀 ~ file: discogs.ts:14 ~ search: ~ url:", url)
 
     // GET call to Discogs API
     const result = await fetch(url);
+    console.log("🚀 ~ file: discogs.ts:17 ~ search: ~ result:", result)
     const data = await result.json();
-    console.log("🚀 ~ file: SearchApi.tsx:18 ~ search: ~ data:", data);
-
+    console.log("🚀 ~ file: discogs.ts:18 ~ search: ~ data:", data)
     // schema check using Zod
     SearchResponseSchema.parse(data);
+    console.log("🚀 ~ file: discogs.ts:20 ~ search: ~ SearchResponseSchema:", SearchResponseSchema)
+    console.log("type of result: ", typeof data)
 
     return data;
   },
