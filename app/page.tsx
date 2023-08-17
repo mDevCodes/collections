@@ -1,4 +1,4 @@
-import discogs from "../utils/discogs";
+import discogs from "./utils/discogs";
 
 export default async function Home() {
   const result = await discogs.search();
