@@ -1,11 +1,17 @@
-import discogs from "./utils/discogs";
+"use client";
 
-export default async function Home() {
-  const result = await discogs.search();
+import SearchBar from "@/components/SearchBar";
+import React from "react";
+
+export default function Home() {
+  const [albumSearch, setAlbumSearch] = React.useState<string>("");
 
   return (
-    <main className="flex flex-col items-center justify-center mt-60">
-      <h1 className="font-bold text-6xl">Home Page</h1>
+    <main className="flex flex-col items-center justify-center ">
+      <SearchBar
+        setAlbumSearch={(albumSearch) => setAlbumSearch(albumSearch)}
+      />
+      <h1 className="font-bold text-6xl mt-10">Home Page</h1>
     </main>
   );
 }
