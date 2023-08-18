@@ -3,10 +3,10 @@
 import Icon from "./Icon";
 
 type Props = {
-  setAlbumSearch: (albumSearch: string) => void;
+  onChange: (value: string) => void;
 };
 
-export default function SearchBar({ setAlbumSearch }: Props) {
+export default function SearchBar({ onChange }: Props) {
   return (
     <div className="m-auto w-3/4 flex justify-center mt-10 relative">
       <Icon
@@ -18,7 +18,7 @@ export default function SearchBar({ setAlbumSearch }: Props) {
         type="text"
         placeholder="Search for your favorite records"
         className="w-5/6 p-3 pl-14 rounded-full text-black"
-        onChange={() => setAlbumSearch}
+        onChange={(e) => onChange(e.target.value)}
       />
       <button className="ml-8 p-4 border-2 rounded-full">Search</button>
     </div>

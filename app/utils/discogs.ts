@@ -2,19 +2,19 @@ import { SearchResponseSchema } from "./discogs.schemas";
 
 const discogs = {
   search: async () => {
+
     // define url for GET API call
-    const baseUrl = "https://api.discogs.com/database/search?";
-    const paramsObj = {
+    const searchParams = new URLSearchParams({
       q: "Nirvana",
       type: "release",
       token: process.env.DISCOGS_API_KEY!,
-    };
-    const searchParams = new URLSearchParams(paramsObj);
-    const url = baseUrl + searchParams;
+    });
+    const url = "https://api.discogs.com/database/search?" + searchParams;
 
     // GET call to Discogs API
     const result = await fetch(url);
     const data = await result.json();
+
     // schema check using Zod
     SearchResponseSchema.parse(data);
 
