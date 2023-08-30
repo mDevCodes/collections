@@ -6,13 +6,16 @@ type searchResult = {
 };
 
 async function discogs(search: props): Promise<searchResult>  {
-    // define url for GET API call
+  console.log(search)  
+  // define url for GET API call
     const searchParams = new URLSearchParams({
       q: search,
       type: "release",
       token: process.env.DISCOGS_API_KEY!,
     });
     const url = "https://api.discogs.com/database/search?" + searchParams;
+
+    console.log("url: ", url)
 
     // GET call to Discogs API
     const result = await fetch(url);

@@ -2,7 +2,7 @@
 import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import SearchBar from "@/components/SearchBar";
-import SearchResult from "./utils/SearchResult";
+import SearchResult from "../components/SearchResult";
 
 const queryClient = new QueryClient();
 

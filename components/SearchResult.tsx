@@ -1,4 +1,4 @@
-import discogs from "./discogs";
+import discogs from "../app/utils/discogs";
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 
