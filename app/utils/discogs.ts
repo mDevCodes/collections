@@ -1,11 +1,14 @@
 import { SearchResponseSchema } from "./discogs.schemas";
 
-const discogs = {
-  search: async () => {
+type props = string;
+type searchResult = {
+  results: [{ year?: string }];
+};
 
+async function discogs(search: props): Promise<searchResult>  {
     // define url for GET API call
     const searchParams = new URLSearchParams({
-      q: "Nirvana",
+      q: search,
       type: "release",
       token: process.env.DISCOGS_API_KEY!,
     });
@@ -17,9 +20,7 @@ const discogs = {
 
     // schema check using Zod
     SearchResponseSchema.parse(data);
-
     return data;
-  },
 };
 
 export default discogs;
