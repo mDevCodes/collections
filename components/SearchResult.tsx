@@ -2,12 +2,10 @@ import discogs from "../app/utils/discogs";
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 
-type search = string;
-
-export default function SearchResult(search: search) {
+export default function SearchResult(props: { search: string }) {
   const { isLoading, isError, data } = useQuery({
-    queryKey: ["search-input", search],
-    queryFn: () => discogs(search),
+    queryKey: ["search-input", props.search],
+    queryFn: () => discogs(props.search),
   });
 
   if (isLoading) {

@@ -5,13 +5,17 @@ type searchResult = {
   results: [{ year?: string }];
 };
 
+const token = process.env.DISCOGS_API_KEY!
+console.log("🚀 ~ file: discogs.ts:9 ~ token:", token)
+
+
 async function discogs(search: props): Promise<searchResult>  {
-  console.log(search)  
+
   // define url for GET API call
     const searchParams = new URLSearchParams({
       q: search,
       type: "release",
-      token: process.env.DISCOGS_API_KEY!,
+      token: token,
     });
     const url = "https://api.discogs.com/database/search?" + searchParams;
 
