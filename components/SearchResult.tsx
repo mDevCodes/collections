@@ -1,8 +1,8 @@
+"use client";
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { SearchResponseSchema } from "@/app/utils/discogs.schemas";
 import SearchBar from "./SearchBar";
-import { useState } from "react";
 
 export default function Search() {
   const [searchValue, setSearchValue] = React.useState<string>("");
@@ -19,8 +19,6 @@ export default function Search() {
         return parsedResult;
       },
     });
-
-    console.log("data: ", data);
 
     if (isLoading) {
       return <h3>Loading...</h3>;
