@@ -1,11 +1,8 @@
+import { z } from "zod";
 import { SearchResponseSchema } from "./discogs.schemas";
 
-type searchResult = {
-  results: [{ year?: string }];
-};
-
 const discogs = {
-  search: async (search: string): Promise<searchResult> => {
+  search: async (search: string): Promise <z.infer<typeof SearchResponseSchema>> => {
     // define url for GET API call
     const searchParams = new URLSearchParams({
       q: search,
