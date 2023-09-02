@@ -1,13 +1,17 @@
-import discogs from "../app/utils/discogs";
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
+import { SearchResponseSchema } from "@/app/utils/discogs.schemas";
 
 export default function SearchResult({ search }: { search: string }) {
   const { data, isError, isLoading } = useQuery({
     queryKey: ["search"],
     queryFn: async () => {
       const params = new URLSearchParams({ search: "the strokes" });
-      return fetch("/api/search?" + params).then((res) => res.json());
+      const result = await fetch("/api/search?" + params).then((res) =>
+        res.json()
+      );
+      const parsedResult = SearchResponseSchema.parse(result);
+      return parsedResult;
     },
   });
 
