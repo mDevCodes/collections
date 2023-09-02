@@ -5,7 +5,7 @@ import SearchBar from "./SearchBar";
 import { useState } from "react";
 
 export default function Search() {
-  const [searchValue, setSearchValue] = useState<string>("");
+  const [searchValue, setSearchValue] = React.useState<string>("");
 
   function SearchResult() {
     const { data, isError, isLoading } = useQuery({
@@ -38,7 +38,7 @@ export default function Search() {
 
   return (
     <div>
-      <SearchBar onChange={(value: string) => setSearchValue(value)} />
+      <SearchBar onClick={(value: string) => setSearchValue(value)} />
       <SearchResult />
     </div>
   );
