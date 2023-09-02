@@ -1,32 +1,45 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { SearchResponseSchema } from "@/app/utils/discogs.schemas";
+import SearchBar from "./SearchBar";
+import { useState } from "react";
 
-export default function SearchResult({ search }: { search: string }) {
-  const { data, isError, isLoading } = useQuery({
-    queryKey: ["search"],
-    queryFn: async () => {
-      const params = new URLSearchParams({ search: "the strokes" });
-      const result = await fetch("/api/search?" + params).then((res) =>
-        res.json()
-      );
-      const parsedResult = SearchResponseSchema.parse(result);
-      return parsedResult;
-    },
-  });
+export default function Search() {
+  const [searchValue, setSearchValue] = React.useState<string>("");
 
-  console.log("data: ", data);
+  function SearchResult() {
+    const { data, isError, isLoading } = useQuery({
+      queryKey: ["search"],
+      queryFn: async () => {
+        const params = new URLSearchParams({ search: "the strokes" });
+        const result = await fetch("/api/search?" + params).then((res) =>
+          res.json()
+        );
+        const parsedResult = SearchResponseSchema.parse(result);
+        return parsedResult;
+      },
+    });
 
-  if (isLoading) {
-    return <h3>Loading...</h3>;
-  }
-  if (isError) {
-    return <h3>Error</h3>;
+    console.log("data: ", data);
+
+    if (isLoading) {
+      return <h3>Loading...</h3>;
+    }
+    if (isError) {
+      return <h3>Error</h3>;
+    }
+
+    return (
+      <div>
+        <h1>{data.results[0].year}</h1>
+      </div>
+    );
   }
 
   return (
     <div>
-      <h1>{data.results[0].year}</h1>
+      {/* <SearchBar onChange={(search: string) => setSearchValue(search)}/> */}
+      <SearchResult />
     </div>
   );
 }
