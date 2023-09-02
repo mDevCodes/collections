@@ -5,13 +5,13 @@ import SearchBar from "./SearchBar";
 import { useState } from "react";
 
 export default function Search() {
-  const [searchValue, setSearchValue] = React.useState<string>("");
+  const [searchValue, setSearchValue] = useState<string>("");
 
   function SearchResult() {
     const { data, isError, isLoading } = useQuery({
       queryKey: ["search"],
       queryFn: async () => {
-        const params = new URLSearchParams({ search: "the strokes" });
+        const params = new URLSearchParams({ search: searchValue });
         const result = await fetch("/api/search?" + params).then((res) =>
           res.json()
         );
@@ -38,7 +38,7 @@ export default function Search() {
 
   return (
     <div>
-      {/* <SearchBar onChange={(search: string) => setSearchValue(search)}/> */}
+      <SearchBar onChange={(value: string) => setSearchValue(value)} />
       <SearchResult />
     </div>
   );
