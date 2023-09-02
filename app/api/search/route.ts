@@ -12,6 +12,6 @@ export async function GET(request: Request) {
     );
   }
 
-  const res = await discogs(query);
+  const res = await discogs.search(query);
   return NextResponse.json(res);
 }
