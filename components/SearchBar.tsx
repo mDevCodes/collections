@@ -9,7 +9,6 @@ export default function SearchBar({
   onClick: (value: string) => void;
 }) {
   const [userInput, setUserInput] = useState("");
-  console.log(userInput);
   return (
     <div className="m-auto w-3/4 flex justify-center mt-10 relative">
       <Icon
@@ -25,7 +24,7 @@ export default function SearchBar({
         onChange={(e) => setUserInput(e.target.value)}
       />
       <button
-        onClick={() => onClick("flume")}
+        onClick={() => onClick(userInput)}
         className="ml-8 p-4 border-2 rounded-full"
       >
         Search
