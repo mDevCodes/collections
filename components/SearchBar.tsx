@@ -2,11 +2,11 @@
 
 import Icon from "./Icon";
 
-type Props = {
+export default function SearchBar({
+  onChange,
+}: {
   onChange: (value: string) => void;
-};
-
-export default function SearchBar({ onChange }: Props) {
+}) {
   return (
     <div className="m-auto w-3/4 flex justify-center mt-10 relative">
       <Icon
