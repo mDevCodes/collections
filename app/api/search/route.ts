@@ -1,9 +1,9 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import discogs from "@/app/utils/discogs";
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const query = searchParams.get("search");
+  const query = request.nextUrl.searchParams.get("search");
 
   if (query === null) {
     return NextResponse.json(
