@@ -4,9 +4,9 @@ import { useState } from "react";
 import Icon from "./Icon";
 
 export default function SearchBar({
-  onClick,
+  onSearch,
 }: {
-  onClick: (value: string) => void;
+  onSearch: (value: string) => void;
 }) {
   const [userInput, setUserInput] = useState("");
   return (
@@ -24,7 +24,7 @@ export default function SearchBar({
         onChange={(e) => setUserInput(e.target.value)}
       />
       <button
-        onClick={() => onClick(userInput)}
+        onClick={() => onSearch(userInput)}
         className="ml-8 p-4 border-2 rounded-full"
       >
         Search

@@ -3,7 +3,7 @@ import { SearchResponseSchema } from "@/app/utils/discogs.schemas";
 
 export default function SearchResult({ searchValue }: { searchValue: string }) {
   const { data, isError, isLoading } = useQuery({
-    queryKey: ["search"],
+    queryKey: ["search", searchValue],
     queryFn: async () => {
       const params = new URLSearchParams({ search: searchValue });
       const result = await fetch("/api/search?" + params).then((res) =>

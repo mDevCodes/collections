@@ -7,9 +7,9 @@ export default function Search() {
   const [searchValue, setSearchValue] = React.useState<string>("");
 
   return (
-    <div>
-      <SearchBar onClick={(value: string) => setSearchValue(value)} />
+    <>
+      <SearchBar onSearch={(value) => setSearchValue(value)} />
       <SearchResult searchValue={searchValue} />
-    </div>
+    </>
   );
 }
