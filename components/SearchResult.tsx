@@ -1,12 +1,11 @@
-import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { SearchResponseSchema } from "@/app/utils/discogs.schemas";
 
-export default function SearchResult({ search }: { search: string }) {
+export default function SearchResult({ searchValue }: { searchValue: string }) {
   const { data, isError, isLoading } = useQuery({
-    queryKey: ["search"],
+    queryKey: ["search", searchValue],
     queryFn: async () => {
-      const params = new URLSearchParams({ search: "the strokes" });
+      const params = new URLSearchParams({ search: searchValue });
       const result = await fetch("/api/search?" + params).then((res) =>
         res.json()
       );
@@ -14,8 +13,6 @@ export default function SearchResult({ search }: { search: string }) {
       return parsedResult;
     },
   });
-
-  console.log("data: ", data);
 
   if (isLoading) {
     return <h3>Loading...</h3>;
