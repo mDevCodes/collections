@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { SearchResponseSchema } from "@/app/utils/discogs.schemas";
+import Result from "./Result";
 
 export default function SearchResult({ searchValue }: { searchValue: string }) {
   const { data, isError, isLoading } = useQuery({
@@ -23,7 +24,9 @@ export default function SearchResult({ searchValue }: { searchValue: string }) {
 
   return (
     <div>
-      <h1>{data.results[0].year}</h1>
+      {data.results.map((album) => (
+        <Result key={album.id} album={album} />
+      ))}
     </div>
   );
 }
