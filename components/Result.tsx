@@ -12,7 +12,7 @@ export default function Result({ album }: { album: Album }) {
       />
       <div className="ml-14">
         <h3 className="text-lg font-bold">Title: {album.title}</h3>
-        <h3>Year: {album.year}</h3>
+        <h3>Year: {album.year ? album.year : "-"}</h3>
       </div>
     </div>
   );
