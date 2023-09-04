@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { SearchResponseSchema } from "./discogs.schemas";
+import { Album, SearchResponseSchema } from "./discogs.schemas";
 
 const discogs = {
   search: async (search: string): Promise <z.infer<typeof SearchResponseSchema>> => {
@@ -11,12 +11,10 @@ const discogs = {
     });
     const url = "https://api.discogs.com/database/search?" + searchParams;
   
-    console.log("url: ", url);
-  
     // GET call to Discogs API
     const result = await fetch(url);
     const data = await result.json();
-  
+
     // schema check using Zod
     SearchResponseSchema.parse(data);
     return data;
