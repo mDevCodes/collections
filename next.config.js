@@ -8,6 +8,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "i.discogs.com",
       },
+      {
+        protocol: "https",
+        hostname: "st.discogs.com",
+      },
     ],
   },
 };
