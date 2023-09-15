@@ -8,6 +8,8 @@ const discogs = {
       q: search,
       type: "release",
       token: process.env.DISCOGS_API_KEY!,
+      country: 'US',
+      format: 'Vinyl'
     });
     const url = "https://api.discogs.com/database/search?" + searchParams;
   
