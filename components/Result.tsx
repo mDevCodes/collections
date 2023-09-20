@@ -5,7 +5,7 @@ import Icon from "./Icon";
 export default function Result({ album }: { album: Album }) {
   return (
     album.title && (
-      <div className="flex mt-16">
+      <div className="flex p-24 border-bottom-solid border-b-2 border-stone-900">
         {album.cover_image.endsWith(".gif") ? (
           <div className="w-[200px] h-[200px] p-12 rounded-sm bg-gray-800">
             <Icon
