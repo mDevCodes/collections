@@ -11,6 +11,7 @@ const discogs = {
       country: 'US',
       format: 'Vinyl'
     });
+    
     const url = "https://api.discogs.com/database/search?" + searchParams;
   
     // GET call to Discogs API
