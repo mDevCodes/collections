@@ -10,6 +10,7 @@ export default function SearchResult({ searchValue }: { searchValue: string }) {
       const result = await fetch("/api/search?" + params).then((res) =>
         res.json()
       );
+
       const parsedResult = SearchResponseSchema.parse(result);
       return parsedResult;
     },
