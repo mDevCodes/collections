@@ -20,9 +20,9 @@ const discogs = {
     const result = await fetch(url);
     const data = await result.json();
 
-      // schema check using Zod
-      // DiscogsResponseSchema.parse(data);
-    return data;
+      // check and narrow data shape
+      const parsedData = DiscogsResponseSchema.parse(data);
+    return parsedData;
   },
 };
  

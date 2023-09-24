@@ -10,9 +10,12 @@ export default function SearchResult({ searchValue }: { searchValue: string }) {
       const result = await fetch("/api/search?" + params).then((res) =>
         res.json()
       );
+      console.log(
+        "🚀 ~ file: SearchResult.tsx:13 ~ queryFn: ~ result:",
+        result
+      );
 
-      const parsedResult = DiscogsResponseSchema.parse(result);
-      return parsedResult;
+      return result;
     },
   });
 
