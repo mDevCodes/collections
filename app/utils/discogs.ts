@@ -1,10 +1,10 @@
 import { z } from "zod";
-import { Album, SearchResponseSchema } from "./discogs.schemas";
+import { DiscogsResponseSchema } from "./discogs.schemas";
 
 const discogs = {
   search: async (
     search: string
-  ): Promise<z.infer<typeof SearchResponseSchema>> => {
+  ): Promise<z.infer<typeof DiscogsResponseSchema>> => {
     // define url for GET API call
     const searchParams = new URLSearchParams({
       q: search,
@@ -21,9 +21,9 @@ const discogs = {
     const data = await result.json();
 
       // schema check using Zod
-      SearchResponseSchema.parse(data);
+      // DiscogsResponseSchema.parse(data);
     return data;
   },
 };
-
+ 
 export default discogs;

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { SearchResponseSchema } from "@/app/utils/discogs.schemas";
+import { DiscogsResponseSchema } from "@/app/utils/discogs.schemas";
 import Result from "./Result";
 
 export default function SearchResult({ searchValue }: { searchValue: string }) {
@@ -11,7 +11,7 @@ export default function SearchResult({ searchValue }: { searchValue: string }) {
         res.json()
       );
 
-      const parsedResult = SearchResponseSchema.parse(result);
+      const parsedResult = DiscogsResponseSchema.parse(result);
       return parsedResult;
     },
   });
