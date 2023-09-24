@@ -1,9 +1,9 @@
-import { Album } from "@/app/utils/discogs.schemas";
 import Image from "next/image";
 import Icon from "./Icon";
+import { Album } from "@/app/utils/discogs.schemas";
 
 export default function Result({ album }: { album: Album }) {
-  return album.title ? (
+  return (
     <div className="flex p-24 border-bottom-solid border-b-2 border-stone-900">
       {album.cover_image.endsWith(".gif") ? (
         <div className="w-[200px] h-[200px] p-12 rounded-sm bg-gray-800">
@@ -17,15 +17,16 @@ export default function Result({ album }: { album: Album }) {
         <Image
           className="rounded-sm"
           src={album.cover_image}
-          alt={`${album.title} cover image`}
+          alt={`${album.albumTitle} cover image`}
           width={200}
           height={200}
         />
       )}
       <div className="ml-14">
-        <h3 className="text-lg font-bold">{album.title}</h3>
+        <p className="text-xl font-bold">{album.albumTitle}</p>
+        <p className="text-lg">{album.artist}</p>
         <p className="text-lg">{album.year ? album.year : "-"}</p>
       </div>
     </div>
-  ) : null;
+  );
 }

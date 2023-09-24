@@ -1,7 +1,13 @@
 import { NextResponse, NextRequest } from "next/server";
 import discogs from "@/app/utils/discogs";
+import { SearchResponseSchema } from "@/app/utils/discogs.schemas";
+import { z } from "zod";
 
-export async function GET(request: NextRequest) {
+export async function GET(
+  request: NextRequest
+): Promise<
+  NextResponse<z.infer<typeof SearchResponseSchema> | { error: string }>
+> {
   const { searchParams } = new URL(request.url);
   const query = request.nextUrl.searchParams.get("search");
 
