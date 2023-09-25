@@ -1,18 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
-import { SearchResponseSchema } from "@/app/utils/discogs.schemas";
 import Result from "./Result";
+import { Album, SearchResponseSchema } from "@/schemas/collections.schemas";
 
 export default function SearchResult({ searchValue }: { searchValue: string }) {
   const { data, isError, isLoading } = useQuery({
     queryKey: ["search", searchValue],
     queryFn: async () => {
       const params = new URLSearchParams({ search: searchValue });
-      const result = await fetch("/api/search?" + params).then((res) =>
-        res.json()
-      );
+      const res = await fetch("/api/search?" + params);
+      const data = await res.json();
+      const parsedData = SearchResponseSchema.parse(data);
 
-      const parsedResult = SearchResponseSchema.parse(result);
-      return parsedResult;
+      return parsedData;
     },
   });
 
@@ -25,7 +24,7 @@ export default function SearchResult({ searchValue }: { searchValue: string }) {
 
   return (
     <div>
-      {data.results.map((album) => (
+      {data.results.map((album: Album) => (
         <Result key={album.id} album={album} />
       ))}
     </div>

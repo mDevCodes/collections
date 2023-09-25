@@ -2,8 +2,9 @@ import z from "zod";
 
 const AlbumSchema = z.object({
   id: z.number(),
-  cover_image: z.string(),
-  title: z.string(),
+  coverImage: z.string(),
+  albumTitle: z.string().nonempty(),
+  artist: z.string(),
   year: z.string().optional(),
 });
 
@@ -13,4 +14,4 @@ const SearchResponseSchema = z.object({
   results: z.array(AlbumSchema),
 });
 
-export { SearchResponseSchema };
+export { AlbumSchema, SearchResponseSchema };
