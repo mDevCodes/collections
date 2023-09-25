@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
-import discogs from "@/app/utils/discogs";
+import discogs from "@/utils/discogs";
 import { z } from "zod";
 import { SearchResponseSchema } from "@/schemas/collections.schemas";
 

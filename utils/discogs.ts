@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { DiscogsSearchResponseSchema } from "../../schemas/discogs.schemas";
+import { DiscogsSearchResponseSchema } from "../schemas/discogs.schemas";
 import splitTitle from "./splitTitle";
 import { SearchResponseSchema } from "@/schemas/collections.schemas";
 
