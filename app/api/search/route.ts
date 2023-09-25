@@ -3,7 +3,7 @@ import discogs from "@/app/utils/discogs";
 import { z } from "zod";
 import { AlbumSchema } from "@/schemas/collections.schemas";
 
-export const SearchResponseSchema = z.object({
+const SearchResponseSchema = z.object({
   results: z.array(AlbumSchema),
 });
 
@@ -25,3 +25,5 @@ export async function GET(
   const res = await discogs.search(query);
   return NextResponse.json(res);
 }
+
+export { SearchResponseSchema };
