@@ -1,6 +1,6 @@
 import z from "zod";
 
-const DiscogsResponseSchema = z.object({
+const DiscogsSearchResponseSchema = z.object({
   results: z.array(
     z.object({
       id: z.number(),
@@ -11,4 +11,4 @@ const DiscogsResponseSchema = z.object({
   ),
 });
 
-export { DiscogsResponseSchema };
+export { DiscogsSearchResponseSchema };

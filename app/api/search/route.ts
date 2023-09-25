@@ -1,7 +1,11 @@
 import { NextResponse, NextRequest } from "next/server";
 import discogs from "@/app/utils/discogs";
-import { SearchResponseSchema } from "@/app/schemas/collections.schemas";
 import { z } from "zod";
+import { AlbumSchema } from "@/schemas/collections.schemas";
+
+export const SearchResponseSchema = z.object({
+  results: z.array(AlbumSchema),
+});
 
 export async function GET(
   request: NextRequest

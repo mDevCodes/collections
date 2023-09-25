@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { DiscogsResponseSchema } from "../schemas/discogs.schemas";
-import { SearchResponseSchema } from "../schemas/collections.schemas";
+import { DiscogsSearchResponseSchema } from "../../schemas/discogs.schemas";
+import { SearchResponseSchema } from "@/app/api/search/route";
 import splitTitle from "./splitTitle";
 
 const discogs = {
@@ -22,7 +22,7 @@ const discogs = {
     const result = await fetch(url);
     const data = await result.json();
 
-    const narrowedData = DiscogsResponseSchema.parse(data);
+    const narrowedData = DiscogsSearchResponseSchema.parse(data);
 
     const searchResponseData = narrowedData.results
       .filter((album) => Boolean(album.title))
