@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { SearchResponseSchema, DiscogsResponseSchema } from "./discogs.schemas";
+import { DiscogsResponseSchema } from "../schemas/discogs.schemas";
+import { SearchResponseSchema } from "../schemas/collections.schemas";
 import splitTitle from "./splitTitle";
 
 const discogs = {
@@ -28,7 +29,7 @@ const discogs = {
       .map((album) => {
         const result = {
           id: album.id,
-          cover_image: album.cover_image,
+          coverImage: album.cover_image,
           albumTitle: splitTitle(album.title).album,
           artist: splitTitle(album.title).artist,
           year: album.year,

@@ -1,6 +1,6 @@
 import { NextResponse, NextRequest } from "next/server";
 import discogs from "@/app/utils/discogs";
-import { SearchResponseSchema } from "@/app/utils/discogs.schemas";
+import { SearchResponseSchema } from "@/app/schemas/collections.schemas";
 import { z } from "zod";
 
 export async function GET(
