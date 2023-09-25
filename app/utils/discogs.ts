@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { DiscogsSearchResponseSchema } from "../../schemas/discogs.schemas";
-import { SearchResponseSchema } from "@/app/api/search/route";
 import splitTitle from "./splitTitle";
+import { SearchResponseSchema } from "@/schemas/collections.schemas";
 
 const discogs = {
   search: async (

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Icon from "./Icon";
-import { Album } from "@/app/schemas/collections.schemas";
+import { Album } from "@/schemas/collections.schemas";
 
 export default function Result({ album }: { album: Album }) {
   return (

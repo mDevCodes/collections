@@ -1,11 +1,7 @@
 import { NextResponse, NextRequest } from "next/server";
 import discogs from "@/app/utils/discogs";
 import { z } from "zod";
-import { AlbumSchema } from "@/schemas/collections.schemas";
-
-const SearchResponseSchema = z.object({
-  results: z.array(AlbumSchema),
-});
+import { SearchResponseSchema } from "@/schemas/collections.schemas";
 
 export async function GET(
   request: NextRequest
@@ -25,5 +21,3 @@ export async function GET(
   const res = await discogs.search(query);
   return NextResponse.json(res);
 }
-
-export { SearchResponseSchema };

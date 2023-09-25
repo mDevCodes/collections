@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import Result from "./Result";
-import { SearchResponseSchema } from "@/app/api/search/route";
-import { Album } from "@/schemas/collections.schemas";
+import { Album, SearchResponseSchema } from "@/schemas/collections.schemas";
 
 export default function SearchResult({ searchValue }: { searchValue: string }) {
   const { data, isError, isLoading } = useQuery({

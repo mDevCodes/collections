@@ -10,4 +10,8 @@ const AlbumSchema = z.object({
 
 export type Album = z.infer<typeof AlbumSchema>;
 
-export { AlbumSchema };
+const SearchResponseSchema = z.object({
+  results: z.array(AlbumSchema),
+});
+
+export { AlbumSchema, SearchResponseSchema };
