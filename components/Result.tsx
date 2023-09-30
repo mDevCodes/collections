@@ -4,7 +4,7 @@ import { Album } from "@/schemas/collections.schemas";
 
 export default function Result({ album }: { album: Album }) {
   return (
-    <div className="flex p-24 border-bottom-solid border-b-2 border-stone-900">
+    <div className="flex p-24 border-bottom-solid border-b border-gray-800">
       {album.coverImage.endsWith(".gif") ? (
         <div className="w-[200px] h-[200px] p-12 rounded-sm bg-gray-800">
           <Icon

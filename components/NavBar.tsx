@@ -8,21 +8,17 @@ import Icon from "./Icon";
 export default function NavBar() {
   return (
     <header
-      className={`flex justify-between items-center border-b-2 border-white p-4 ${lobster.className}`}
+      className={`flex justify-between items-center border-b border-gray-800 p-4 ${lobster.className}`}
     >
       <Link href="/">
-        <Icon type="home" size="medium" />
-      </Link>
-
-      <Link href="/">
-        <h1 className="text-4xl">Collections</h1>
+        <h1 className="text-2xl">Collections</h1>
       </Link>
 
       <Link href="/user-profile">
         <Image
           src="/images/profile-picture.jpg"
-          width={50}
-          height={50}
+          width={32}
+          height={32}
           alt="User profile picture"
           className="rounded-full"
         />
