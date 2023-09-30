@@ -3,10 +3,11 @@ import clsx from "clsx";
 type Props = {
   type: "search" | "no-img";
   className?: string;
-  size?: "small" | "medium";
+  size?: "xsmall" | "small" | "medium";
 };
 
 const sizes = {
+  xsmall: "h-4 w-4",
   small: "h-5 w-5",
   medium: "h-7 w-7",
 };
@@ -18,6 +19,7 @@ export default function Icon({ type, className, size = "medium" }: Props) {
         <svg
           className={clsx(sizes[size], className)}
           fill="none"
+          viewBox="0 0 24 24"
           strokeWidth={1.5}
           stroke="currentColor"
         >
