@@ -23,10 +23,10 @@ export default function SearchResult({ searchValue }: { searchValue: string }) {
   }
 
   return (
-    <div>
+    <>
       {data.results.map((album: Album) => (
         <Result key={album.id} album={album} />
       ))}
-    </div>
+    </>
   );
 }

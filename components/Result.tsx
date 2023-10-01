@@ -4,28 +4,28 @@ import { Album } from "@/schemas/collections.schemas";
 
 export default function Result({ album }: { album: Album }) {
   return (
-    <div className="flex gap-6 px-8 py-24  border-bottom-solid border-b border-gray-800">
-      {album.coverImage.endsWith(".gif") ? (
-        <div className="w-[200px] h-[200px] p-12 rounded-sm bg-gray-800">
+    <div className="flex w-full items-center gap-6 py-4  border-bottom-solid border-gray-800">
+      <div className="relative w-24 h-24 shrink-0 overflow-hidden">
+        {album.coverImage.endsWith(".gif") ? (
           <Icon
-            className="w-full h-full text-white "
+            className="w-full h-full text-white bg-gray-800 p-7"
             type="no-img"
             size="medium"
           />
-        </div>
-      ) : (
-        <Image
-          className="rounded-sm"
-          src={album.coverImage}
-          alt={`${album.albumTitle} cover image`}
-          width={200}
-          height={200}
-        />
-      )}
+        ) : (
+          <Image
+            className="rounded-sm object-cover w-full"
+            src={album.coverImage}
+            alt={`${album.albumTitle} cover image`}
+            fill
+          />
+        )}
+      </div>
+
       <div>
-        <p className="text-xl font-bold">{album.albumTitle}</p>
-        <p className="text-lg">{album.artist}</p>
-        <p className="text-lg">{album.year ? album.year : "-"}</p>
+        <p className="text-sm font-bold">{album.albumTitle}</p>
+        <p className="text-sm">{album.artist}</p>
+        <p className="text-sm text-gray-400">{album.year ? album.year : "-"}</p>
       </div>
     </div>
   );
