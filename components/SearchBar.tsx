@@ -10,7 +10,7 @@ export default function SearchBar({
 }) {
   const [userInput, setUserInput] = useState("");
   return (
-    <div className="flex gap-2 w-full mt-10 mb-6 relative">
+    <div className="flex gap-2 w-full mt-10 mb-10 lg:mb-12 lg:mt-14 relative">
       <Icon
         type="search"
         className="absolute top-[11px] left-3.5 text-black"
