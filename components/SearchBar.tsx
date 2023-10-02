@@ -30,11 +30,13 @@ export default function SearchBar({
           setUserInput("");
         }}
       >
-        <Icon
-          type="clear"
-          className="absolute top-2.5 right-24 text-black"
-          size="small"
-        />
+        {userInput ? (
+          <Icon
+            type="clear"
+            className="absolute top-2.5 right-24 text-black"
+            size="small"
+          />
+        ) : undefined}
       </button>
       <button
         onClick={() => onSearch(userInput)}
