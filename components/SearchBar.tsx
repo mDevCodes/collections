@@ -25,7 +25,7 @@ export default function SearchBar({
       />
       <Icon
         type="clear"
-        className="absolute top-2.5 right-24 text-black"
+        className="absolute top-2.5 right-24 text-black cursor-pointer"
         size="small"
       />
       <button
