@@ -1,7 +1,7 @@
 import clsx from "clsx";
 
 type Props = {
-  type: "search" | "no-img";
+  type: "search" | "no-img" | "clear";
   className?: string;
   size?: "xsmall" | "small" | "medium";
 };
@@ -53,5 +53,23 @@ export default function Icon({ type, className, size = "medium" }: Props) {
     );
   }
 
+  if (type === "clear") {
+    return (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className={clsx(sizes[size], className)}
+        fill="currentColor"
+        stroke="currentColor"
+        strokeWidth={1.5}
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M6 18 18 6M6 6l12 12"
+        />
+      </svg>
+    );
+  }
   return null;
 }
