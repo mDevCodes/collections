@@ -9,7 +9,6 @@ export default function SearchBar({
   onSearch: (value: string) => void;
 }) {
   const [userInput, setUserInput] = useState("");
-  console.log("🚀 ~ file: SearchBar.tsx:14 ~ userInput:", userInput);
 
   return (
     <div className="flex gap-2 w-full mt-10 mb-10 lg:mb-12 lg:mt-14 relative">
