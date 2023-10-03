@@ -5,11 +5,11 @@ import { useRef } from "react";
 
 export default function SearchBar({
   searchValue,
-  onInput,
+  onSearch,
   onClear,
 }: {
-  searchValue: string | null;
-  onInput: (value: string) => void;
+  searchValue: string;
+  onSearch: (value: string) => void;
   onClear: () => void;
 }) {
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -26,8 +26,8 @@ export default function SearchBar({
         type="text"
         placeholder="Search for your favorite records"
         className="grow pl-10 py-2 rounded-xl text-black"
-        onChange={(e) => onInput(e.target.value)}
-        value={searchValue ? searchValue : ""}
+        onChange={(e) => onSearch(e.target.value)}
+        value={searchValue}
         ref={inputRef}
       />
       {searchValue ? (

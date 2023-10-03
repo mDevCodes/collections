@@ -2,16 +2,12 @@ import { useQuery } from "@tanstack/react-query";
 import Result from "./Result";
 import { Album, SearchResponseSchema } from "@/schemas/collections.schemas";
 
-export default function SearchResult({
-  searchValue,
-}: {
-  searchValue: string | null;
-}) {
+export default function SearchResult({ searchValue }: { searchValue: string }) {
   const { data, isError, isLoading } = useQuery({
     queryKey: ["search", searchValue],
     queryFn: async () => {
       const params = new URLSearchParams({
-        search: searchValue ? searchValue : "",
+        search: searchValue,
       });
       const res = await fetch("/api/search?" + params);
       const data = await res.json();
