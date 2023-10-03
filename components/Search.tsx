@@ -4,11 +4,14 @@ import SearchBar from "./SearchBar";
 import SearchResult from "./SearchResult";
 
 export default function Search() {
-  const [searchValue, setSearchValue] = React.useState<string>("");
+  const [searchValue, setSearchValue] = React.useState<string | null>(null);
 
   return (
     <>
-      <SearchBar onSearch={(value) => setSearchValue(value)} />
+      <SearchBar
+        searchValue={searchValue}
+        onInput={(value) => setSearchValue(value)}
+      />
       <SearchResult searchValue={searchValue} />
     </>
   );
