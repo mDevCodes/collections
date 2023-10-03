@@ -1,6 +1,7 @@
 "use client";
 
 import Icon from "./Icon";
+import { useRef } from "react";
 
 export default function SearchBar({
   searchValue,
@@ -11,6 +12,8 @@ export default function SearchBar({
   onInput: (value: string) => void;
   onClear: () => void;
 }) {
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
   return (
     <div className="flex gap-2 w-full mt-10 mb-10 lg:mb-12 lg:mt-14 relative">
       <Icon
@@ -25,9 +28,15 @@ export default function SearchBar({
         className="grow pl-10 py-2 rounded-xl text-black"
         onChange={(e) => onInput(e.target.value)}
         value={searchValue ? searchValue : ""}
+        ref={inputRef}
       />
       {searchValue ? (
-        <button onClick={onClear}>
+        <button
+          onClick={() => {
+            onClear();
+            inputRef.current?.focus();
+          }}
+        >
           <Icon
             type="clear"
             className="absolute top-2.5 right-24 text-black"
