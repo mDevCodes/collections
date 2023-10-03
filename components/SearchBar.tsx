@@ -5,9 +5,11 @@ import Icon from "./Icon";
 export default function SearchBar({
   searchValue,
   onInput,
+  onClear,
 }: {
   searchValue: string | null;
   onInput: (value: string) => void;
+  onClear: () => void;
 }) {
   return (
     <div className="flex gap-2 w-full mt-10 mb-10 lg:mb-12 lg:mt-14 relative">
@@ -25,7 +27,7 @@ export default function SearchBar({
         value={searchValue ? searchValue : ""}
       />
       {searchValue ? (
-        <button>
+        <button onClick={onClear}>
           <Icon
             type="clear"
             className="absolute top-2.5 right-24 text-black"

@@ -11,6 +11,7 @@ export default function Search() {
       <SearchBar
         searchValue={searchValue}
         onInput={(value) => setSearchValue(value)}
+        onClear={() => setSearchValue(null)}
       />
       <SearchResult searchValue={searchValue} />
     </>
