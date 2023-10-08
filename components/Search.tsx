@@ -8,7 +8,11 @@ export default function Search() {
 
   return (
     <>
-      <SearchBar onSearch={(value) => setSearchValue(value)} />
+      <SearchBar
+        searchValue={searchValue}
+        onSearch={(value) => setSearchValue(value)}
+        onClear={() => setSearchValue("")}
+      />
       <SearchResult searchValue={searchValue} />
     </>
   );

@@ -6,7 +6,9 @@ export default function SearchResult({ searchValue }: { searchValue: string }) {
   const { data, isError, isLoading } = useQuery({
     queryKey: ["search", searchValue],
     queryFn: async () => {
-      const params = new URLSearchParams({ search: searchValue });
+      const params = new URLSearchParams({
+        search: searchValue,
+      });
       const res = await fetch("/api/search?" + params);
       const data = await res.json();
       const parsedData = SearchResponseSchema.parse(data);
