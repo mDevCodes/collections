@@ -8,10 +8,13 @@ export default function Search() {
   const [clientSearchValue, setClientSearchValue] = useState<string>("");
   const [serverSearchValue, setServerSearchValue] = useState<string>("");
 
-  useEffect(
-    () => debounce(() => setServerSearchValue(clientSearchValue), 700),
-    [clientSearchValue]
-  );
+  useEffect(() => {
+    const debouncedSearch = debounce(
+      () => setServerSearchValue(clientSearchValue),
+      2000
+    );
+    debouncedSearch.cancel();
+  }, [clientSearchValue]);
 
   return (
     <>
