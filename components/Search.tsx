@@ -12,7 +12,7 @@ export default function Search() {
     () => {
       setServerSearchValue(clientSearchValue);
     },
-    2000,
+    700,
     [clientSearchValue]
   );
 
@@ -20,7 +20,12 @@ export default function Search() {
     <>
       <SearchBar
         searchValue={clientSearchValue}
-        onSearch={(value) => setClientSearchValue(value)}
+        onSearch={(value) => {
+          setClientSearchValue(value);
+          if (value === "") {
+            setServerSearchValue(value);
+          }
+        }}
         onClear={() => setClientSearchValue("")}
       />
       <SearchResult searchValue={serverSearchValue} />
