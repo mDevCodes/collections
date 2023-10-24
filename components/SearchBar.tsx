@@ -15,7 +15,7 @@ export default function SearchBar({
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   return (
-    <div className="flex gap-2 w-full mt-10 mb-10 lg:mb-5 lg:mt-14 relative">
+    <div className="flex gap-2 w-full mt-10 mb-10 lg:mb-14 lg:mt-14 relative">
       <Icon
         type="search"
         className="absolute top-[11px] left-3.5 text-black"
