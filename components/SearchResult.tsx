@@ -1,11 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import Result from "./Result";
 import { Album, SearchResponseSchema } from "@/schemas/collections.schemas";
-import Icon from "./Icon";
-import ResultLoadingUi from "./ResultLoadingUi";
+import ResultLoading from "./ResultLoading";
 
 export default function SearchResult({ searchValue }: { searchValue: string }) {
-  const { data, isError, isLoading, isSuccess } = useQuery({
+  const { data, isError, isLoading } = useQuery({
     queryKey: ["search", searchValue],
     queryFn: async () => {
       const params = new URLSearchParams({
@@ -24,7 +23,7 @@ export default function SearchResult({ searchValue }: { searchValue: string }) {
     return (
       <>
         {loadingUiArray.map((_, index) => (
-          <ResultLoadingUi key={index} />
+          <ResultLoading key={index} />
         ))}
       </>
     );
