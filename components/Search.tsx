@@ -1,19 +1,34 @@
 "use client";
-import React from "react";
+import { useState, useEffect } from "react";
+import { useDebounce } from "react-use";
 import SearchBar from "./SearchBar";
 import SearchResult from "./SearchResult";
 
 export default function Search() {
-  const [searchValue, setSearchValue] = React.useState<string>("");
+  const [clientSearchValue, setClientSearchValue] = useState<string>("");
+  const [serverSearchValue, setServerSearchValue] = useState<string>("");
+
+  const [, cancel] = useDebounce(
+    () => {
+      setServerSearchValue(clientSearchValue);
+    },
+    700,
+    [clientSearchValue]
+  );
 
   return (
     <>
       <SearchBar
-        searchValue={searchValue}
-        onSearch={(value) => setSearchValue(value)}
-        onClear={() => setSearchValue("")}
+        searchValue={clientSearchValue}
+        onSearch={(value) => {
+          setClientSearchValue(value);
+          if (value === "") {
+            setServerSearchValue(value);
+          }
+        }}
+        onClear={() => setClientSearchValue("")}
       />
-      <SearchResult searchValue={searchValue} />
+      <SearchResult searchValue={serverSearchValue} />
     </>
   );
 }
