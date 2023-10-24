@@ -6,7 +6,7 @@ import { PulseLoader } from "react-spinners";
 import { CSSProperties } from "react";
 
 export default function SearchResult({ searchValue }: { searchValue: string }) {
-  const { data, isError, isLoading } = useQuery({
+  const { data, isError, isLoading, isSuccess } = useQuery({
     queryKey: ["search", searchValue],
     queryFn: async () => {
       const params = new URLSearchParams({
@@ -46,7 +46,7 @@ export default function SearchResult({ searchValue }: { searchValue: string }) {
 
   return (
     <>
-      <div className="w-full lg:h-6 lg:mb-3"></div>
+      <div className="w-full lg:h-3.5 lg:mb-3"></div>
       {data?.results.map((album: Album) => (
         <Result key={album.id} album={album} />
       ))}
