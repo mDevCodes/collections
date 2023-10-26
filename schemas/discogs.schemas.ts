@@ -7,6 +7,7 @@ const DiscogsSearchResponseSchema = z.object({
       cover_image: z.string(),
       title: z.string(),
       year: z.string().optional(),
+      format: z.string().array().optional(),
     })
   ),
 });

@@ -4,7 +4,7 @@ import { Album, SearchResponseSchema } from "@/schemas/collections.schemas";
 import ResultLoading from "./ResultLoading";
 
 export default function SearchResult({ searchValue }: { searchValue: string }) {
-  const { data, isError, isLoading} = useQuery({
+  const { data, isError, isLoading } = useQuery({
     queryKey: ["search", searchValue],
     queryFn: async () => {
       const params = new URLSearchParams({

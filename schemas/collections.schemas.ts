@@ -6,6 +6,7 @@ const AlbumSchema = z.object({
   albumTitle: z.string().nonempty(),
   artist: z.string(),
   year: z.string().optional(),
+  format: z.string().optional(),
 });
 
 export type Album = z.infer<typeof AlbumSchema>;
