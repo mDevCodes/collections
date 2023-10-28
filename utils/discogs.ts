@@ -33,7 +33,7 @@ const discogs = {
           albumTitle: splitTitle(album.title).album,
           artist: splitTitle(album.title).artist,
           year: album.year,
-          format: album.format?.join(", "),
+          formats: album.formats,
         };
 
         return result;
