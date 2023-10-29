@@ -5,7 +5,7 @@ import concatAlbumDescription from "@/utils/concatAlbumDescription";
 
 export default function Result({ album }: { album: Album }) {
   return (
-    <div className="flex w-full items-center gap-6 mb-6 border-bottom-solid border-gray-800">
+    <div className="flex w-full gap-6 mb-5 pb-5 border-b border-solid border-gray-800">
       <div className="relative w-24 h-24 lg:w-36 lg:h-36 shrink-0 overflow-hidden">
         {album.coverImage.endsWith(".gif") ? (
           <Icon
@@ -23,11 +23,11 @@ export default function Result({ album }: { album: Album }) {
         )}
       </div>
 
-      <div className="text-sm">
+      <div className="text-sm max-w-[250px]">
         <p className="lg:text-xl font-bold">{album.albumTitle}</p>
         <p>{album.artist}</p>
         <p className="text-gray-400">{album.year ? album.year : "-"}</p>
-        <p>{concatAlbumDescription(album)}</p>
+        <p className="text-xs">{concatAlbumDescription(album)}</p>
       </div>
     </div>
   );

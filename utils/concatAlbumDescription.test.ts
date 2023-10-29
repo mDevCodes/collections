@@ -13,17 +13,22 @@ test("Render album description", () =>
       formats: [
         {
           name: "Vinyl",
-          qty: "3",
+          qty: "1",
+          text: "Pink Marble",
+          descriptions: ["LP"],
         },
         {
           name: "Vinyl",
           qty: "1",
+          text: "Green Marble",
+          descriptions: ["LP"],
         },
         {
           name: "Vinyl",
           qty: "1",
+          text: "Orange",
           descriptions: ["LP"],
         },
       ],
     })
-  ).toEqual("Pink Marble Vinyl L, Green Marble Vinyl LP, Orange Vinyl LP"));
+  ).toEqual("Pink Marble Vinyl LP"));
