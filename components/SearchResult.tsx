@@ -33,6 +33,14 @@ export default function SearchResult({ searchValue }: { searchValue: string }) {
     return <h3>Error</h3>;
   }
 
+  if (data.results.length === 0) {
+    return (
+      <div className="flex justify-center">
+        <p>No results found</p>
+      </div>
+    );
+  }
+
   return (
     <>
       {data?.results.map((album: Album) => (
