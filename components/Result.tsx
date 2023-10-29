@@ -23,11 +23,13 @@ export default function Result({ album }: { album: Album }) {
         )}
       </div>
 
-      <div className="text-sm max-w-[250px]">
-        <p className="lg:text-xl font-bold">{album.albumTitle}</p>
-        <p>{album.artist}</p>
-        <p className="text-gray-400">{album.year ? album.year : "-"}</p>
-        <p className="text-xs">{concatAlbumDescription(album.formats)}</p>
+      <div>
+        <div className="text-sm max-w-[250px] md:max-w-full">
+          <p className="lg:text-xl font-bold">{album.albumTitle}</p>
+          <p>{album.artist}</p>
+          <p className="text-gray-400">{album.year ? album.year : "-"}</p>
+        </div>
+        <p className="text-xs mt-1">{concatAlbumDescription(album.formats)}</p>
       </div>
     </div>
   );
