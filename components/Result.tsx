@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Icon from "./Icon";
 import { Album } from "@/schemas/collections.schemas";
-import concatAlbumDescription from "@/utils/concatAlbumDescription";
+import concatAlbumDescription from "@/utils/getFormatsDescription";
 
 export default function Result({ album }: { album: Album }) {
   return (
@@ -27,7 +27,7 @@ export default function Result({ album }: { album: Album }) {
         <p className="lg:text-xl font-bold">{album.albumTitle}</p>
         <p>{album.artist}</p>
         <p className="text-gray-400">{album.year ? album.year : "-"}</p>
-        <p className="text-xs">{concatAlbumDescription(album)}</p>
+        <p className="text-xs">{concatAlbumDescription(album.formats)}</p>
       </div>
     </div>
   );

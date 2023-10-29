@@ -1,8 +1,8 @@
-import { Album } from "@/schemas/collections.schemas";
+import { Formats } from "@/schemas/collections.schemas";
 
-export default function concatAlbumDescription(album: Album) {
-  if (album.formats.length === 1) {
-    return album.formats
+export default function getFormatsDescription(formats: Formats) {
+  if (formats.length === 1) {
+    return formats
       .map((format) => {
         const { name, text, descriptions } = format;
         const qty = parseInt(format.qty);
@@ -53,7 +53,7 @@ export default function concatAlbumDescription(album: Album) {
       })
       .join(", ");
   } else {
-    return album.formats
+    return formats
       .map((format) => {
         const { name, text, qty, descriptions } = format;
         if (text && descriptions) {
