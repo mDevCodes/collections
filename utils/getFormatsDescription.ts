@@ -1,4 +1,5 @@
 import { Formats } from "@/schemas/collections.schemas";
+import { startCase } from "lodash";
 
 export default function getFormatsDescription(formats: Formats) {
   if (formats.length === 1) {
@@ -6,75 +7,56 @@ export default function getFormatsDescription(formats: Formats) {
       .map((format) => {
         const { name, text, descriptions } = format;
         const qty = parseInt(format.qty);
-        if (text && descriptions) {
-          if (qty === 1) {
-            return text + " " + name + " " + descriptions?.join(" ");
-          }
 
-          if (qty > 1) {
-            return (
-              text +
-              " " +
-              name +
-              " " +
-              descriptions?.join(" ") +
-              " " +
-              `(x${qty})`
-            );
-          }
+        if (text && descriptions) {
+          return qty > 1
+            ? startCase(`${text} ${name} ${descriptions?.join(" ")})`) +
+                " " +
+                `(x${qty})`
+            : startCase(`${text} ${name} ${descriptions?.join(" ")}`);
         }
         if (text) {
-          if (qty === 1) {
-            return text + " " + name;
-          }
-
-          if (qty > 1) {
-            return text + " " + name + " " + `(x${qty})`;
-          }
+          return qty > 1
+            ? startCase(`${text} ${name}`) + " " + `(x${qty})`
+            : startCase(`${text} ${name}`);
         }
         if (descriptions) {
-          if (qty === 1) {
-            return name + " " + descriptions?.join(" ");
-          }
-
-          if (qty > 1) {
-            return name + " " + descriptions?.join(" ") + " " + `(x${qty})`;
-          }
+          return qty > 1
+            ? startCase(`${name} ${descriptions?.join(" ")}`) +
+                " " +
+                `(x${qty})`
+            : startCase(`${name} ${descriptions?.join(" ")}`);
         }
         if (text === undefined && descriptions === undefined) {
-          if (qty === 1) {
-            return name;
-          }
-
-          if (qty > 1) {
-            return name + " " + `(x${qty})`;
-          }
+          return qty > 1
+            ? startCase(`${name}`) + " " + `(x${qty})`
+            : startCase(`${name}`);
         }
       })
       .join(", ");
   } else {
     return formats
       .map((format) => {
-        const { name, text, qty, descriptions } = format;
+        const { name, text, descriptions } = format;
+        const qty = parseInt(format.qty);
+
         if (text && descriptions) {
           return (
-            text +
-            " " +
-            name +
-            " " +
-            descriptions?.join(" ") +
+            startCase(`${text} ${name} ${descriptions?.join(" ")})`) +
             " " +
             `(x${qty})`
           );
         }
         if (text) {
-          return text + " " + name + " " + `(x${qty})`;
+          return startCase(`${text} ${name}`) + " " + `(x${qty})`;
         }
         if (descriptions) {
-          return name + " " + descriptions?.join(" ") + " " + `(x${qty})`;
+          return (
+            startCase(`${name} ${descriptions?.join(" ")}`) + " " + `(x${qty})`
+          );
         }
         if (text === undefined && descriptions === undefined) {
-          return name + " " + `(x${qty})`;
+          return startCase(`${name}`) + " " + `(x${qty})`;
         }
       })
       .join(", ");
