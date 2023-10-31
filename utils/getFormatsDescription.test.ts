@@ -1,8 +1,7 @@
 import { expect, test } from "vitest";
 import getFormatsDescription from "./getFormatsDescription";
 
-// formats.length=1, qty=1, text, descriptions.length=1
-test("Render album description", () =>
+test("Can get full formats description for result with only one format, quantity equal to 1, includes text, and one item in descriptions array", () => {
   expect(
     getFormatsDescription([
       {
@@ -12,10 +11,10 @@ test("Render album description", () =>
         descriptions: ["LP"],
       },
     ])
-  ).toStrictEqual("Pink Marble Vinyl LP"));
+  ).toStrictEqual("Pink Marble Vinyl LP");
+});
 
-// formats.length=1, qty>1, text, descriptions.length=1
-test("Render album description", () =>
+test("Can get full formats description for result with only one format, quantity greater than 1, includes text, and one item in descriptions array", () => {
   expect(
     getFormatsDescription([
       {
@@ -25,23 +24,23 @@ test("Render album description", () =>
         descriptions: ["LP"],
       },
     ])
-  ).toStrictEqual("Pink Marble Vinyl LP (x2)"));
+  ).toStrictEqual("Pink Marble Vinyl LP (x2)");
+});
 
-// formats.length=1, qty=1, text, descriptions.length>1
-test("Get formats description", () =>
+test("Can get full formats description for result with only one format, quantity equal to 1, includes text, and more than one item in descriptions array", () => {
   expect(
     getFormatsDescription([
       {
         name: "Vinyl",
-        qty: "2",
+        qty: "1",
         text: "Pink Marble",
-        descriptions: ["LP"],
+        descriptions: ["LP", '12"'],
       },
     ])
-  ).toStrictEqual("Pink Marble Vinyl LP (x2)"));
+  ).toStrictEqual("Pink Marble Vinyl LP (x2)");
+});
 
-// formats.length=1, qty>1, text, descriptions.length>1
-test("Render album description", () =>
+test("Can get full formats description for result with only one format, quantity greater than 1, includes text, and more than one item in descriptions array", () => {
   expect(
     getFormatsDescription([
       {
@@ -51,10 +50,10 @@ test("Render album description", () =>
         descriptions: ["LP", '12"'],
       },
     ])
-  ).toStrictEqual("Pink Marble Vinyl LP 12 (x2)"));
+  ).toStrictEqual("Pink Marble Vinyl LP 12 (x2)");
+});
 
-// formats.length=1, qty=1, text, descriptions=undefined
-test("Get formats description", () =>
+test("Can get full formats description for result with only one format, quantity equal to 1, includes text, and no descriptions array", () => {
   expect(
     getFormatsDescription([
       {
@@ -63,10 +62,10 @@ test("Get formats description", () =>
         text: "Pink Marble",
       },
     ])
-  ).toStrictEqual("Pink Marble Vinyl"));
+  ).toStrictEqual("Pink Marble Vinyl");
+});
 
-// formats.length=1, qty>1, text, descriptions=undefined
-test("Get formats description", () =>
+test("Can get full formats description for result with only one format, quantity greater than 1, includes text, and no descriptions array", () => {
   expect(
     getFormatsDescription([
       {
@@ -75,10 +74,10 @@ test("Get formats description", () =>
         text: "Pink Marble",
       },
     ])
-  ).toStrictEqual("Pink Marble Vinyl (x2)"));
+  ).toStrictEqual("Pink Marble Vinyl (x2)");
+});
 
-// formats.length=1, qty=1, text=undefined, descriptions.length=1
-test("Get formats description", () =>
+test("Can get full formats description for result with only one format, quantity equal to 1, does not include text, and one item in descriptions array", () => {
   expect(
     getFormatsDescription([
       {
@@ -87,10 +86,10 @@ test("Get formats description", () =>
         descriptions: ["LP"],
       },
     ])
-  ).toStrictEqual("Vinyl LP"));
+  ).toStrictEqual("Vinyl LP");
+});
 
-// formats.length=1, qty>1, text=undefined, descriptions.length=1
-test("Get formats description", () =>
+test("Can get full formats description for result with only one format, quantity greater than 1, does not include text, and one item in descriptions array", () => {
   expect(
     getFormatsDescription([
       {
@@ -99,10 +98,10 @@ test("Get formats description", () =>
         descriptions: ["LP"],
       },
     ])
-  ).toStrictEqual("Vinyl LP (x2)"));
+  ).toStrictEqual("Vinyl LP (x2)");
+});
 
-// formats.length=1, qty=1, text=undefined, descriptions.length>1
-test("Get formats description", () =>
+test("Can get full formats description for result with only one format, quantity equal to 1, does not include text, and more than one item in descriptions array", () => {
   expect(
     getFormatsDescription([
       {
@@ -111,10 +110,10 @@ test("Get formats description", () =>
         descriptions: ["LP", '12"'],
       },
     ])
-  ).toStrictEqual("Vinyl LP 12"));
+  ).toStrictEqual("Vinyl LP 12");
+});
 
-// formats.length=1, qty>1, text=undefined, descriptions.length>1
-test("Get formats description", () =>
+test("Can get full formats description for result with only one format, quantity greater than 1, does not include text, and more than one item in descriptions array", () => {
   expect(
     getFormatsDescription([
       {
@@ -123,10 +122,10 @@ test("Get formats description", () =>
         descriptions: ["LP", '12"'],
       },
     ])
-  ).toStrictEqual("Vinyl LP 12 (x2)"));
+  ).toStrictEqual("Vinyl LP 12 (x2)");
+});
 
-// formats.length=1, qty=1, text=undefined, descriptions=undefined
-test("Get formats description", () =>
+test("Can get full formats description for result with only one format, quantity equal to 1, and does not include text or descriptions array", () => {
   expect(
     getFormatsDescription([
       {
@@ -134,10 +133,10 @@ test("Get formats description", () =>
         qty: "1",
       },
     ])
-  ).toStrictEqual("Vinyl"));
+  ).toStrictEqual("Vinyl");
+});
 
-// formats.length=1, qty>1, text=undefined, descriptions=undefined
-test("Get formats description", () =>
+test("Can get full formats description for result with only one format, quantity greater than 1, and does not include text or descriptions array", () => {
   expect(
     getFormatsDescription([
       {
@@ -145,11 +144,11 @@ test("Get formats description", () =>
         qty: "2",
       },
     ])
-  ).toStrictEqual("Vinyl (x2)"));
+  ).toStrictEqual("Vinyl (x2)");
+});
 
-// formats.length>1, qty=1, text, descriptions.length=1
-// *only case to check here is that the results with qty=1 are showing "(x1)"
-test("Render album description", () =>
+// *only case to check for formats array with more than one object is that the results with qty=1 are rendering "(x1)"
+test("Can get full formats description for result with more than one format, quantity equal to 1, includes text, and one item in descriptions array for each format", () => {
   expect(
     getFormatsDescription([
       {
@@ -160,7 +159,7 @@ test("Render album description", () =>
       },
       {
         name: "Vinyl",
-        qty: "2",
+        qty: "1",
         text: "Green Marble",
         descriptions: ["LP"],
       },
@@ -173,4 +172,5 @@ test("Render album description", () =>
     ])
   ).toStrictEqual(
     "Pink Marble Vinyl LP (x1), Green Marble Vinyl LP (x2), Orange Vinyl LP (x1)"
-  ));
+  );
+});
