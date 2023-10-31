@@ -11,7 +11,7 @@ test("Can get full formats description for result with only one format, quantity
         descriptions: ["LP"],
       },
     ])
-  ).toStrictEqual("Pink Marble Vinyl LP");
+  ).toBe("Pink Marble Vinyl LP");
 });
 
 test("Can get full formats description for result with only one format, quantity greater than 1, includes text, and one item in descriptions array", () => {
@@ -24,7 +24,7 @@ test("Can get full formats description for result with only one format, quantity
         descriptions: ["LP"],
       },
     ])
-  ).toStrictEqual("Pink Marble Vinyl LP (x2)");
+  ).toBe("Pink Marble Vinyl LP (x2)");
 });
 
 test("Can get full formats description for result with only one format, quantity equal to 1, includes text, and more than one item in descriptions array", () => {
@@ -37,7 +37,7 @@ test("Can get full formats description for result with only one format, quantity
         descriptions: ["LP", '12"'],
       },
     ])
-  ).toStrictEqual("Pink Marble Vinyl LP (x2)");
+  ).toBe("Pink Marble Vinyl LP (x2)");
 });
 
 test("Can get full formats description for result with only one format, quantity greater than 1, includes text, and more than one item in descriptions array", () => {
@@ -50,7 +50,7 @@ test("Can get full formats description for result with only one format, quantity
         descriptions: ["LP", '12"'],
       },
     ])
-  ).toStrictEqual("Pink Marble Vinyl LP 12 (x2)");
+  ).toBe("Pink Marble Vinyl LP 12 (x2)");
 });
 
 test("Can get full formats description for result with only one format, quantity equal to 1, includes text, and no descriptions array", () => {
@@ -62,7 +62,7 @@ test("Can get full formats description for result with only one format, quantity
         text: "Pink Marble",
       },
     ])
-  ).toStrictEqual("Pink Marble Vinyl");
+  ).toBe("Pink Marble Vinyl");
 });
 
 test("Can get full formats description for result with only one format, quantity greater than 1, includes text, and no descriptions array", () => {
@@ -74,7 +74,7 @@ test("Can get full formats description for result with only one format, quantity
         text: "Pink Marble",
       },
     ])
-  ).toStrictEqual("Pink Marble Vinyl (x2)");
+  ).toBe("Pink Marble Vinyl (x2)");
 });
 
 test("Can get full formats description for result with only one format, quantity equal to 1, does not include text, and one item in descriptions array", () => {
@@ -86,7 +86,7 @@ test("Can get full formats description for result with only one format, quantity
         descriptions: ["LP"],
       },
     ])
-  ).toStrictEqual("Vinyl LP");
+  ).toBe("Vinyl LP");
 });
 
 test("Can get full formats description for result with only one format, quantity greater than 1, does not include text, and one item in descriptions array", () => {
@@ -98,7 +98,7 @@ test("Can get full formats description for result with only one format, quantity
         descriptions: ["LP"],
       },
     ])
-  ).toStrictEqual("Vinyl LP (x2)");
+  ).toBe("Vinyl LP (x2)");
 });
 
 test("Can get full formats description for result with only one format, quantity equal to 1, does not include text, and more than one item in descriptions array", () => {
@@ -110,7 +110,7 @@ test("Can get full formats description for result with only one format, quantity
         descriptions: ["LP", '12"'],
       },
     ])
-  ).toStrictEqual("Vinyl LP 12");
+  ).toBe("Vinyl LP 12");
 });
 
 test("Can get full formats description for result with only one format, quantity greater than 1, does not include text, and more than one item in descriptions array", () => {
@@ -122,7 +122,7 @@ test("Can get full formats description for result with only one format, quantity
         descriptions: ["LP", '12"'],
       },
     ])
-  ).toStrictEqual("Vinyl LP 12 (x2)");
+  ).toBe("Vinyl LP 12 (x2)");
 });
 
 test("Can get full formats description for result with only one format, quantity equal to 1, and does not include text or descriptions array", () => {
@@ -133,7 +133,7 @@ test("Can get full formats description for result with only one format, quantity
         qty: "1",
       },
     ])
-  ).toStrictEqual("Vinyl");
+  ).toBe("Vinyl");
 });
 
 test("Can get full formats description for result with only one format, quantity greater than 1, and does not include text or descriptions array", () => {
@@ -144,7 +144,7 @@ test("Can get full formats description for result with only one format, quantity
         qty: "2",
       },
     ])
-  ).toStrictEqual("Vinyl (x2)");
+  ).toBe("Vinyl (x2)");
 });
 
 // *only case to check for formats array with more than one object is that the results with qty=1 are rendering "(x1)"
@@ -170,7 +170,7 @@ test("Can get full formats description for result with more than one format, qua
         descriptions: ["LP"],
       },
     ])
-  ).toStrictEqual(
+  ).toBe(
     "Pink Marble Vinyl LP (x1), Green Marble Vinyl LP (x2), Orange Vinyl LP (x1)"
   );
 });
