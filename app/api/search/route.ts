@@ -9,7 +9,10 @@ export async function GET(
   NextResponse<z.infer<typeof SearchResponseSchema> | { error: string }>
 > {
   const { searchParams } = new URL(request.url);
-  const query = request.nextUrl.searchParams.get("search");
+  const query = {
+    search: request.nextUrl.searchParams.get("search") || "",
+    page: request.nextUrl.searchParams.get("page") || "",
+  };
 
   if (query === null) {
     return NextResponse.json(

@@ -4,13 +4,14 @@ import { Album, SearchResponseSchema } from "@/schemas/collections.schemas";
 import ResultLoading from "./ResultLoading";
 
 export default function SearchResult({ searchValue }: { searchValue: string }) {
-  const { data, error, isFetching } = useInfiniteQuery({
+  const { data, error, isFetching, fetchNextPage } = useInfiniteQuery({
     queryKey: ["search", searchValue],
     queryFn: async ({ pageParam }) => {
       const params = new URLSearchParams({
-        search: searchValue,
+        search: searchValue ? searchValue : "flume",
         page: String(pageParam),
       });
+
       const res = await fetch("/api/search?" + params);
       const data = await res.json();
       const parsedData = SearchResponseSchema.parse(data);
@@ -54,6 +55,12 @@ export default function SearchResult({ searchValue }: { searchValue: string }) {
           ))}
         </>
       ))}
+      <button
+        className="border-2 border-gray-800 rounded-xl p-3 mb-4"
+        onClick={() => fetchNextPage()}
+      >
+        More Results
+      </button>
     </>
   );
 }

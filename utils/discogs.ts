@@ -4,16 +4,19 @@ import splitTitle from "./splitTitle";
 import { SearchResponseSchema } from "@/schemas/collections.schemas";
 
 const discogs = {
-  search: async (
-    search: string
-  ): Promise<z.infer<typeof SearchResponseSchema>> => {
+  search: async (query: {
+    search: string;
+    page: string;
+  }): Promise<z.infer<typeof SearchResponseSchema>> => {
     // define url for GET API call
     const searchParams = new URLSearchParams({
-      q: search,
+      q: query.search,
       type: "release",
       token: process.env.DISCOGS_API_KEY!,
       country: "US",
       format: "Vinyl",
+      per_page: "10",
+      page: String(query.page),
     });
 
     const url = "https://api.discogs.com/database/search?" + searchParams;
