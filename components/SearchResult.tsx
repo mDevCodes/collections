@@ -20,23 +20,12 @@ export default function SearchResult({ searchValue }: { searchValue: string }) {
       initialPageParam: 1,
       getNextPageParam: (lastPage) => {
         if (lastPage.pagination.page < lastPage.pagination.pages) {
-          lastPage.pagination.page + 1;
+          return lastPage.pagination.page + 1;
         }
 
         return undefined;
       },
     });
-
-  if (isFetching) {
-    const loadingUiArray = Array(10).fill(null);
-    return (
-      <>
-        {loadingUiArray.map((_, index) => (
-          <ResultLoading key={index} />
-        ))}
-      </>
-    );
-  }
 
   if (error) {
     return <h3>Error</h3>;
@@ -59,14 +48,25 @@ export default function SearchResult({ searchValue }: { searchValue: string }) {
           ))}
         </>
       ))}
-      {hasNextPage ? (
-        <button
-          className="border-2 border-gray-800 rounded-xl p-3 mb-4"
-          onClick={() => fetchNextPage()}
-        >
-          More Results
-        </button>
-      ) : null}
+      {isFetching
+        ? () => {
+            const loadingUiArray = Array(10).fill(null);
+            return (
+              <>
+                {loadingUiArray.map((_, index) => (
+                  <ResultLoading key={index} />
+                ))}
+              </>
+            );
+          }
+        : null}
+      <button
+        className="border-2 border-gray-800 rounded-xl p-3 mb-4"
+        onClick={() => fetchNextPage()}
+        disabled={!hasNextPage || isFetching}
+      >
+        More Results
+      </button>
     </>
   );
 }
