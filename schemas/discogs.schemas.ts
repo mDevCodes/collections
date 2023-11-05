@@ -1,8 +1,10 @@
 import z from "zod";
 
 const DiscogsSearchResponseSchema = z.object({
-  page: z.number(),
-  pages: z.number(),
+  pagination: z.object({
+    page: z.number(),
+    pages: z.number(),
+  }),
   results: z.array(
     z.object({
       id: z.number(),

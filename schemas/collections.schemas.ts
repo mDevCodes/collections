@@ -22,8 +22,10 @@ export type Album = z.infer<typeof AlbumSchema>;
 export type Formats = z.infer<typeof FormatsSchema>;
 
 const SearchResponseSchema = z.object({
-  page: z.number(),
-  pages: z.number(),
+  pagination: z.object({
+    page: z.number(),
+    pages: z.number(),
+  }),
   results: z.array(AlbumSchema),
 });
 

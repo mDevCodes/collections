@@ -22,5 +22,6 @@ export async function GET(
   }
 
   const res = await discogs.search(query);
+  console.log("🚀 ~ file: route.ts:25 ~ res:", res);
   return NextResponse.json(res);
 }

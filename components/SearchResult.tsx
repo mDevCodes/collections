@@ -4,27 +4,28 @@ import { Album, SearchResponseSchema } from "@/schemas/collections.schemas";
 import ResultLoading from "./ResultLoading";
 
 export default function SearchResult({ searchValue }: { searchValue: string }) {
-  const { data, error, isFetching, fetchNextPage } = useInfiniteQuery({
-    queryKey: ["search", searchValue],
-    queryFn: async ({ pageParam }) => {
-      const params = new URLSearchParams({
-        search: searchValue,
-        page: String(pageParam),
-      });
-      const res = await fetch("/api/search?" + params);
-      const data = await res.json();
-      const parsedData = SearchResponseSchema.parse(data);
-      return parsedData;
-    },
-    initialPageParam: 1,
-    getNextPageParam: (lastPage, allPages) => {
-      if (lastPage.page < lastPage.pages) {
-        lastPage.page + 1;
-      }
+  const { data, error, isFetching, fetchNextPage, hasNextPage } =
+    useInfiniteQuery({
+      queryKey: ["search", searchValue],
+      queryFn: async ({ pageParam }) => {
+        const params = new URLSearchParams({
+          search: searchValue,
+          page: String(pageParam),
+        });
+        const res = await fetch("/api/search?" + params);
+        const data = await res.json();
+        const parsedData = SearchResponseSchema.parse(data);
+        return parsedData;
+      },
+      initialPageParam: 1,
+      getNextPageParam: (lastPage) => {
+        if (lastPage.page < lastPage.pages) {
+          lastPage.page + 1;
+        }
 
-      return undefined;
-    },
-  });
+        return undefined;
+      },
+    });
 
   if (isFetching) {
     const loadingUiArray = Array(10).fill(null);
@@ -58,12 +59,14 @@ export default function SearchResult({ searchValue }: { searchValue: string }) {
           ))}
         </>
       ))}
-      <button
-        className="border-2 border-gray-800 rounded-xl p-3 mb-4"
-        onClick={() => fetchNextPage()}
-      >
-        More Results
-      </button>
+      {hasNextPage ? (
+        <button
+          className="border-2 border-gray-800 rounded-xl p-3 mb-4"
+          onClick={() => fetchNextPage()}
+        >
+          More Results
+        </button>
+      ) : null}
     </>
   );
 }

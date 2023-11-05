@@ -24,6 +24,7 @@ const discogs = {
     // GET call to Discogs API
     const result = await fetch(url);
     const data = await result.json();
+    // console.log("🚀 ~ file: discogs.ts:27 ~ data:", data);
 
     const narrowedData = DiscogsSearchResponseSchema.parse(data);
 
