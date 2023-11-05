@@ -19,8 +19,8 @@ export default function SearchResult({ searchValue }: { searchValue: string }) {
       },
       initialPageParam: 1,
       getNextPageParam: (lastPage) => {
-        if (lastPage.page < lastPage.pages) {
-          lastPage.page + 1;
+        if (lastPage.pagination.page < lastPage.pagination.pages) {
+          lastPage.pagination.page + 1;
         }
 
         return undefined;
