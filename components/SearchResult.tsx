@@ -8,18 +8,21 @@ export default function SearchResult({ searchValue }: { searchValue: string }) {
     queryKey: ["search", searchValue],
     queryFn: async ({ pageParam }) => {
       const params = new URLSearchParams({
-        search: searchValue ? searchValue : "flume",
+        search: searchValue,
         page: String(pageParam),
       });
-
       const res = await fetch("/api/search?" + params);
       const data = await res.json();
       const parsedData = SearchResponseSchema.parse(data);
       return parsedData;
     },
     initialPageParam: 1,
-    getNextPageParam: (lastPage, allPages, lastPageParam) => {
-      return lastPageParam + 1;
+    getNextPageParam: (lastPage, allPages) => {
+      if (lastPage.page < lastPage.pages) {
+        lastPage.page + 1;
+      }
+
+      return undefined;
     },
   });
 

@@ -27,22 +27,24 @@ const discogs = {
 
     const narrowedData = DiscogsSearchResponseSchema.parse(data);
 
-    const searchResponseData = narrowedData.results
-      .filter((album) => Boolean(album.title))
-      .map((album) => {
-        const result = {
-          id: album.id,
-          coverImage: album.cover_image,
-          albumTitle: splitTitle(album.title).album,
-          artist: splitTitle(album.title).artist,
-          year: album.year,
-          formats: album.formats,
-        };
+    const searchResponseData = {
+      ...narrowedData,
+      results: narrowedData.results
+        .filter((album) => Boolean(album.title))
+        .map((album) => {
+          const result = {
+            id: album.id,
+            coverImage: album.cover_image,
+            albumTitle: splitTitle(album.title).album,
+            artist: splitTitle(album.title).artist,
+            year: album.year,
+            formats: album.formats,
+          };
+          return result;
+        }),
+    };
 
-        return result;
-      });
-
-    return { results: searchResponseData };
+    return searchResponseData;
   },
 };
 
