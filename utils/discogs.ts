@@ -24,13 +24,11 @@ const discogs = {
     // GET call to Discogs API
     const result = await fetch(url);
     const data = await result.json();
-    // console.log("🚀 ~ file: discogs.ts:27 ~ data:", data);
 
     const narrowedData = DiscogsSearchResponseSchema.parse(data);
 
     const searchResponseData = {
-      ...narrowedData,
-      results: narrowedData.results
+      data: narrowedData.results
         .filter((album) => Boolean(album.title))
         .map((album) => {
           const result = {
@@ -43,6 +41,9 @@ const discogs = {
           };
           return result;
         }),
+      currentPage: narrowedData.pagination.page,
+      isLastPage:
+        narrowedData.pagination.page === narrowedData.pagination.pages,
     };
 
     return searchResponseData;

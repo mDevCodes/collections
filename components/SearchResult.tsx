@@ -19,10 +19,9 @@ export default function SearchResult({ searchValue }: { searchValue: string }) {
       },
       initialPageParam: 1,
       getNextPageParam: (lastPage) => {
-        if (lastPage.pagination.page < lastPage.pagination.pages) {
-          return lastPage.pagination.page + 1;
+        if (!lastPage.isLastPage) {
+          return lastPage.currentPage + 1;
         }
-
         return undefined;
       },
     });
@@ -41,32 +40,24 @@ export default function SearchResult({ searchValue }: { searchValue: string }) {
 
   return (
     <>
-      {data?.pages.map((page) => (
-        <>
-          {page.results.map((album: Album) => (
-            <Result key={album.id} album={album} />
-          ))}
-        </>
-      ))}
+      {data?.pages.map((page) =>
+        page.data.map((album: Album) => <Result key={album.id} album={album} />)
+      )}
       {isFetching
         ? () => {
-            const loadingUiArray = Array(10).fill(null);
-            return (
-              <>
-                {loadingUiArray.map((_, index) => (
-                  <ResultLoading key={index} />
-                ))}
-              </>
-            );
+            Array(10)
+              .fill(null)
+              .map((_, index) => <ResultLoading key={index} />);
           }
         : null}
-      <button
-        className="border-2 border-gray-800 rounded-xl p-3 mb-4"
-        onClick={() => fetchNextPage()}
-        disabled={!hasNextPage || isFetching}
-      >
-        More Results
-      </button>
+      {!isFetching && hasNextPage ? (
+        <button
+          className="border-2 border-gray-800 rounded-xl p-3 mb-4"
+          onClick={() => fetchNextPage()}
+        >
+          More Results
+        </button>
+      ) : null}
     </>
   );
 }
