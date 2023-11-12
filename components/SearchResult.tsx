@@ -44,11 +44,9 @@ export default function SearchResult({ searchValue }: { searchValue: string }) {
         page.data.map((album: Album) => <Result key={album.id} album={album} />)
       )}
       {isFetching
-        ? () => {
-            Array(10)
-              .fill(null)
-              .map((_, index) => <ResultLoading key={index} />);
-          }
+        ? Array(10)
+            .fill(null)
+            .map((_, index) => <ResultLoading key={index} />)
         : null}
       {!isFetching && hasNextPage ? (
         <button
