@@ -30,18 +30,18 @@ export default function SearchResult({ searchValue }: { searchValue: string }) {
     return <h3>Error</h3>;
   }
 
-  if (data?.pages.length === 0) {
-    return (
-      <div className="flex justify-center">
-        <p>No results found</p>
-      </div>
-    );
-  }
-
   return (
     <>
-      {data?.pages.map((page) =>
-        page.data.map((album: Album) => <Result key={album.id} album={album} />)
+      {data?.pages[0].data.length !== 0 ? (
+        data?.pages.map((page) =>
+          page.data.map((album: Album) => (
+            <Result key={album.id} album={album} />
+          ))
+        )
+      ) : (
+        <div className="flex justify-center">
+          <p>No results found</p>
+        </div>
       )}
       {isFetching
         ? Array(10)
