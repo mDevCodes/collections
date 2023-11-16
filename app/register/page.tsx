@@ -1,9 +1,24 @@
-import { useRouter } from "next/router";
+"use client";
 import { FormEvent } from "react";
 
 export default function Register() {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const response = await fetch("api/auth/register", {
+      method: "POST",
+      body: JSON.stringify({
+        email: formData.get("email"),
+        password: formData.get("password"),
+      }),
+    });
+    console.log(response);
+  };
   return (
-    <form className="flex flex-col mx-auto max-w-md mt-6">
+    <form
+      className="flex flex-col mx-auto max-w-md mt-6"
+      onSubmit={handleSubmit}
+    >
       <div className="flex flex-col">
         <label htmlFor="email">Email</label>
         <input
