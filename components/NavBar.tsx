@@ -5,7 +5,6 @@ import { Lobster } from "next/font/google";
 import { useSession } from "next-auth/react";
 
 const lobster = Lobster({ weight: "400", subsets: ["latin"] });
-import Icon from "./Icon";
 import { SessionProvider } from "next-auth/react";
 
 export default function NavBar() {
