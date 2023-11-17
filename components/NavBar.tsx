@@ -1,10 +1,11 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { Lobster } from "next/font/google";
+import { Lobster, Inter } from "next/font/google";
 import { useSession } from "next-auth/react";
 
 const lobster = Lobster({ weight: "400", subsets: ["latin"] });
+const inter = Inter({ weight: "400", subsets: ["latin"] });
 import { SessionProvider } from "next-auth/react";
 
 export default function NavBar() {
@@ -19,18 +20,23 @@ export default function NavBar() {
         </Link>
 
         {status === "authenticated" ? (
-          <Link href="/user-profile">
-            <Image
-              src="/images/profile-picture.jpg"
-              width={32}
-              height={32}
-              alt="User profile picture"
-              className="rounded-full"
-            />
-          </Link>
+          <div className="flex flex-row gap-3 items-center">
+            <Link href="/user-profile">
+              <Image
+                src="/images/profile-picture.jpg"
+                width={32}
+                height={32}
+                alt="User profile picture"
+                className="rounded-full"
+              />
+            </Link>
+            <Link href={"/api/auth/signout"}>
+              <button className={`${inter.className} `}>Sign Out</button>
+            </Link>
+          </div>
         ) : (
           <Link href="/api/auth/signin">
-            <button>Sign In</button>
+            <button className={`${inter.className} `}>Sign In</button>
           </Link>
         )}
       </header>
