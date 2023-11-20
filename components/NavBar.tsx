@@ -11,7 +11,7 @@ export default function NavBar() {
       className={`flex justify-between items-center border-b border-gray-800 p-4`}
     >
       <Link href="/">
-        <h1 className="text-2xl">Collections</h1>
+        <h1 className="text-2xl font-lobster">Collections</h1>
       </Link>
 
       {status === "authenticated" ? (

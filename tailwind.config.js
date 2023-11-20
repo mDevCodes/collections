@@ -13,8 +13,8 @@ module.exports = {
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
       fontFamily: {
-        primary: ["Inter"],
-        secondary: ["Lobster"],
+        inter: ["var(--font-inter)"],
+        lobster: ["var(--font-lobster)"],
       },
     },
   },
