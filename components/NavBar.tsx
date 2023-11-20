@@ -1,17 +1,14 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { Lobster, Inter } from "next/font/google";
 import { useSession } from "next-auth/react";
-
-const lobster = Lobster({ weight: "400", subsets: ["latin"] });
-const inter = Inter({ weight: "400", subsets: ["latin"] });
+import { signIn, signOut } from "next-auth/react";
 
 export default function NavBar() {
   const { status } = useSession();
   return (
     <header
-      className={`flex justify-between items-center border-b border-gray-800 p-4 ${lobster.className}`}
+      className={`flex justify-between items-center border-b border-gray-800 p-4`}
     >
       <Link href="/">
         <h1 className="text-2xl">Collections</h1>
@@ -28,13 +25,11 @@ export default function NavBar() {
               className="rounded-full"
             />
           </Link>
-          <Link href={"/api/auth/signout"}>
-            <button className={`${inter.className} `}>Sign Out</button>
-          </Link>
+          <button onClick={() => signOut()}>Sign Out</button>
         </div>
       ) : (
         <Link href="/api/auth/signin">
-          <button className={`${inter.className} `}>Sign In</button>
+          <button onClick={() => signIn()}>Sign In</button>
         </Link>
       )}
     </header>
