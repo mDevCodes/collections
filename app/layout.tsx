@@ -4,11 +4,11 @@ import NavBar from "../components/NavBar";
 import Providers from "../components/Providers";
 import { Lobster, Inter } from "next/font/google";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
-const lobster = Lobster({
+const base = Inter({ subsets: ["latin"], variable: "--font-base" });
+const heading = Lobster({
   weight: "400",
   subsets: ["latin"],
-  variable: "--font-lobster",
+  variable: "--font-heading",
 });
 
 export const metadata: Metadata = {
@@ -22,8 +22,8 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${lobster.variable} ${inter.variable}`}>
-      <body className="font-inter">
+    <html lang="en" className={`${base.variable} ${heading.variable}`}>
+      <body className="font-base">
         <Providers>
           <NavBar />
           {children}
