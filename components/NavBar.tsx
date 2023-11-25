@@ -10,7 +10,7 @@ export default function NavBar() {
       <Link href="/">
         <h1 className="text-2xl font-heading">Collections</h1>
       </Link>
-      <LoginStatus></LoginStatus>
+      <LoginStatus />
     </header>
   );
 }
