@@ -1,28 +1,16 @@
-import Image from "next/image";
+"use client";
 import Link from "next/link";
-import { Lobster } from "next/font/google";
-
-const lobster = Lobster({ weight: "400", subsets: ["latin"] });
-import Icon from "./Icon";
+import LoginStatus from "./LoginStatus";
 
 export default function NavBar() {
   return (
     <header
-      className={`flex justify-between items-center border-b border-gray-800 p-4 ${lobster.className}`}
+      className={`flex justify-between items-center border-b border-gray-800 p-4`}
     >
       <Link href="/">
-        <h1 className="text-2xl">Collections</h1>
+        <h1 className="text-2xl font-heading">Collections</h1>
       </Link>
-
-      <Link href="/user-profile">
-        <Image
-          src="/images/profile-picture.jpg"
-          width={32}
-          height={32}
-          alt="User profile picture"
-          className="rounded-full"
-        />
-      </Link>
+      <LoginStatus />
     </header>
   );
 }
