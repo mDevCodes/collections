@@ -1,5 +1,17 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { SupabaseAdapter } from "@next-auth/supabase-adapter"
+
+
+interface SupabaseAdapterArgs {
+  url: string;
+  secret: string;
+}
+
+const adapterArgs: SupabaseAdapterArgs = {
+  url: process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+  secret: process.env.SUPABASE_SERVICE_ROLE_KEY || '',
+}
 
 export const options: NextAuthOptions = {
   secret: process.env.NEXTAUTH_URL,
@@ -28,4 +40,6 @@ export const options: NextAuthOptions = {
       },
     }),
   ],
+  adapter: SupabaseAdapter({  url: process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+  secret: process.env.SUPABASE_SERVICE_ROLE_KEY || '',}),
 };
