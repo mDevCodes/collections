@@ -64,7 +64,10 @@ create policy "Users can delete their own collection items"
 create or replace function public.handle_new_user()
 returns trigger
 language plpgsql
-security definer set search_path = public
+-- pgcrypto (gen_random_bytes) lives in the `extensions` schema on Supabase,
+-- not `public` -- it must be on the search_path or this fails with
+-- "Database error saving new user" on every signup.
+security definer set search_path = public, extensions
 as $$
 begin
   insert into public.profiles (id, username, share_slug)
