@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
 
 export default function Login() {
   const router = useRouter();
@@ -15,25 +16,37 @@ export default function Login() {
     setError(null);
     setIsSubmitting(true);
 
+    if (!isSupabaseConfigured()) {
+      setIsSubmitting(false);
+      setError(
+        "Accounts aren't set up yet — Supabase hasn't been configured for this deployment. See SETUP.md."
+      );
+      return;
+    }
+
     const formData = new FormData(e.currentTarget);
     const email = String(formData.get("email"));
     const password = String(formData.get("password"));
 
-    const supabase = createClient();
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      const supabase = createClient();
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    setIsSubmitting(false);
+      if (signInError) {
+        setError(signInError.message);
+        return;
+      }
 
-    if (signInError) {
-      setError(signInError.message);
-      return;
+      router.push("/");
+      router.refresh();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Something went wrong.");
+    } finally {
+      setIsSubmitting(false);
     }
-
-    router.push("/");
-    router.refresh();
   };
 
   return (

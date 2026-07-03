@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
 
 export default function Register() {
   const router = useRouter();
@@ -17,30 +18,42 @@ export default function Register() {
     setMessage(null);
     setIsSubmitting(true);
 
+    if (!isSupabaseConfigured()) {
+      setIsSubmitting(false);
+      setError(
+        "Accounts aren't set up yet — Supabase hasn't been configured for this deployment. See SETUP.md."
+      );
+      return;
+    }
+
     const formData = new FormData(e.currentTarget);
     const email = String(formData.get("email"));
     const password = String(formData.get("password"));
 
-    const supabase = createClient();
-    const { data, error: signUpError } = await supabase.auth.signUp({
-      email,
-      password,
-    });
+    try {
+      const supabase = createClient();
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+      });
 
-    setIsSubmitting(false);
+      if (signUpError) {
+        setError(signUpError.message);
+        return;
+      }
 
-    if (signUpError) {
-      setError(signUpError.message);
-      return;
+      if (data.session) {
+        router.push("/");
+        router.refresh();
+        return;
+      }
+
+      setMessage("Check your email to confirm your account, then sign in.");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Something went wrong.");
+    } finally {
+      setIsSubmitting(false);
     }
-
-    if (data.session) {
-      router.push("/");
-      router.refresh();
-      return;
-    }
-
-    setMessage("Check your email to confirm your account, then sign in.");
   };
 
   return (
