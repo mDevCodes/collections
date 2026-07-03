@@ -27,6 +27,12 @@ const discogs = {
     const result = await fetch(url);
     const data = await result.json();
 
+    if (!result.ok) {
+      throw new Error(
+        `Discogs API returned ${result.status}: ${JSON.stringify(data)}`
+      );
+    }
+
     const narrowedData = DiscogsSearchResponseSchema.parse(data);
 
     const searchResponseData = {
