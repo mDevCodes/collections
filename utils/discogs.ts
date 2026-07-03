@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { DiscogsSearchResponseSchema } from "../schemas/discogs.schemas";
 import splitTitle from "./splitTitle";
+import rankSearchResults from "./rankSearchResults";
 import { SearchResponseSchema } from "@/schemas/collections.schemas";
 
 const discogs = {
@@ -28,19 +29,22 @@ const discogs = {
     const narrowedData = DiscogsSearchResponseSchema.parse(data);
 
     const searchResponseData = {
-      data: narrowedData.results
-        .filter((album) => Boolean(album.title))
-        .map((album) => {
-          const result = {
-            id: album.id,
-            coverImage: album.cover_image,
-            albumTitle: splitTitle(album.title).album,
-            artist: splitTitle(album.title).artist,
-            year: album.year,
-            formats: album.formats,
-          };
-          return result;
-        }),
+      data: rankSearchResults(
+        narrowedData.results
+          .filter((album) => Boolean(album.title))
+          .map((album) => {
+            const result = {
+              id: album.id,
+              coverImage: album.cover_image,
+              albumTitle: splitTitle(album.title).album,
+              artist: splitTitle(album.title).artist,
+              year: album.year,
+              formats: album.formats,
+            };
+            return result;
+          }),
+        query.search
+      ),
       currentPage: narrowedData.pagination.page,
       isLastPage:
         narrowedData.pagination.page === narrowedData.pagination.pages,
