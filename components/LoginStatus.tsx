@@ -1,31 +1,45 @@
-import Image from "next/image";
+"use client";
+
 import Link from "next/link";
-import { useSession } from "next-auth/react";
-import { signIn, signOut } from "next-auth/react";
+import useUser from "@/lib/supabase/useUser";
+import { createClient } from "@/lib/supabase/client";
 
 export default function LoginStatus() {
-  const { status } = useSession();
+  const { user, isLoading } = useUser();
 
-  if (status === "loading") {
+  if (isLoading) {
     return null;
   }
 
-  if (status === "authenticated") {
+  if (user) {
     return (
-      <div className="flex flex-row gap-3 items-center">
-        <Link href="/user-profile">
-          <Image
-            src="/images/profile-picture.jpg"
-            width={32}
-            height={32}
-            alt="User profile picture"
-            className="rounded-full"
-          />
+      <div className="flex flex-row gap-4 items-center">
+        <Link href="/collection" className="hidden sm:inline">
+          Collection
         </Link>
-        <button onClick={() => signOut()}>Sign Out</button>
+        <Link href="/wishlist" className="hidden sm:inline">
+          Wishlist
+        </Link>
+        <Link href="/user-profile">Profile</Link>
+        <button
+          onClick={() => createClient().auth.signOut()}
+          className="border-2 border-gray-800 rounded-xl px-3 py-1"
+        >
+          Sign Out
+        </button>
       </div>
     );
   }
 
-  return <button onClick={() => signIn()}>Sign In</button>;
+  return (
+    <div className="flex flex-row gap-3 items-center">
+      <Link href="/login">Sign In</Link>
+      <Link
+        href="/register"
+        className="border-2 border-gray-800 rounded-xl px-3 py-1"
+      >
+        Register
+      </Link>
+    </div>
+  );
 }
