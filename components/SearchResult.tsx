@@ -2,8 +2,14 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import Result from "./Result";
 import { Album, SearchResponseSchema } from "@/schemas/collections.schemas";
 import ResultLoading from "./ResultLoading";
+import useUser from "@/lib/supabase/useUser";
+import {
+  useCollectionItems,
+  useToggleCollectionItem,
+} from "@/lib/hooks/useCollectionItems";
 
 export default function SearchResult({ searchValue }: { searchValue: string }) {
+  const { user } = useUser();
   const { data, error, isFetching, fetchNextPage, hasNextPage } =
     useInfiniteQuery({
       queryKey: ["search", searchValue],
@@ -26,6 +32,16 @@ export default function SearchResult({ searchValue }: { searchValue: string }) {
       },
     });
 
+  const { data: collectionItems } = useCollectionItems("collection");
+  const { data: wishlistItems } = useCollectionItems("wishlist");
+  const { add: addToCollection, remove: removeFromCollection } =
+    useToggleCollectionItem("collection");
+  const { add: addToWishlist, remove: removeFromWishlist } =
+    useToggleCollectionItem("wishlist");
+
+  const collectionIds = new Set(collectionItems?.map((item) => item.discogsId));
+  const wishlistIds = new Set(wishlistItems?.map((item) => item.discogsId));
+
   if (error) {
     return <h3>Error</h3>;
   }
@@ -35,7 +51,23 @@ export default function SearchResult({ searchValue }: { searchValue: string }) {
       {data?.pages[0].data.length !== 0 ? (
         data?.pages.map((page) =>
           page.data.map((album: Album) => (
-            <Result key={album.id} album={album} />
+            <Result
+              key={album.id}
+              album={album}
+              isSignedIn={!!user}
+              isInCollection={collectionIds.has(album.id)}
+              isInWishlist={wishlistIds.has(album.id)}
+              onToggleCollection={() =>
+                collectionIds.has(album.id)
+                  ? removeFromCollection.mutate(album.id)
+                  : addToCollection.mutate(album)
+              }
+              onToggleWishlist={() =>
+                wishlistIds.has(album.id)
+                  ? removeFromWishlist.mutate(album.id)
+                  : addToWishlist.mutate(album)
+              }
+            />
           ))
         )
       ) : (

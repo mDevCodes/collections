@@ -27,4 +27,19 @@ const SearchResponseSchema = z.object({
   isLastPage: z.boolean(),
 });
 
-export { AlbumSchema, SearchResponseSchema };
+const ListTypeSchema = z.enum(["collection", "wishlist"]);
+
+const CollectionItemSchema = z.object({
+  id: z.string(),
+  discogsId: z.number(),
+  listType: ListTypeSchema,
+  albumTitle: z.string(),
+  artist: z.string(),
+  coverImage: z.string().nullable(),
+  year: z.string().nullable(),
+});
+
+export type ListType = z.infer<typeof ListTypeSchema>;
+export type CollectionItem = z.infer<typeof CollectionItemSchema>;
+
+export { AlbumSchema, SearchResponseSchema, ListTypeSchema, CollectionItemSchema };
