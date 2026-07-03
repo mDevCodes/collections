@@ -42,7 +42,7 @@ const discogs = {
                 artist: splitTitle(album.title).artist,
                 year: album.year,
                 formats: album.formats,
-                masterId: album.master_id,
+                masterId: album.master_id ?? undefined,
               };
               return result;
             }),
