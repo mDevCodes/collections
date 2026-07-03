@@ -2,6 +2,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import Icon from "@/components/Icon";
 import { createClient } from "@/lib/supabase/server";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
 
 type CollectionItemRow = {
   id: string;
@@ -51,6 +52,10 @@ export default async function SharedCollectionPage({
 }: {
   params: { shareSlug: string };
 }) {
+  if (!isSupabaseConfigured()) {
+    notFound();
+  }
+
   const supabase = createClient();
 
   const { data: profile } = await supabase

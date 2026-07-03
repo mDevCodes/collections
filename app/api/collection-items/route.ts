@@ -1,7 +1,14 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { CollectionItem, ListTypeSchema } from "@/schemas/collections.schemas";
+
+const notConfiguredResponse = () =>
+  NextResponse.json(
+    { error: "Supabase is not configured yet. See SETUP.md." },
+    { status: 503 }
+  );
 
 const CreateItemSchema = z.object({
   discogsId: z.number(),
@@ -33,6 +40,8 @@ function toCollectionItem(row: {
 }
 
 export async function GET(request: Request) {
+  if (!isSupabaseConfigured()) return notConfiguredResponse();
+
   const { searchParams } = new URL(request.url);
   const listType = ListTypeSchema.parse(searchParams.get("listType"));
 
@@ -60,6 +69,8 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  if (!isSupabaseConfigured()) return notConfiguredResponse();
+
   const body = CreateItemSchema.parse(await request.json());
 
   const supabase = createClient();
@@ -96,6 +107,8 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  if (!isSupabaseConfigured()) return notConfiguredResponse();
+
   const { searchParams } = new URL(request.url);
   const listType = ListTypeSchema.parse(searchParams.get("listType"));
   const discogsId = Number(searchParams.get("discogsId"));
