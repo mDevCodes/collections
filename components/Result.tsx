@@ -47,7 +47,21 @@ export default function Result({
           </div>
           <p className="text-xs mt-1">
             {concatAlbumDescription(album.formats)}
+            {album.pressingCount && album.pressingCount > 1 ? (
+              <span className="text-gray-400">
+                {" "}
+                &middot; {album.pressingCount} pressings
+              </span>
+            ) : null}
           </p>
+          <a
+            href={`https://www.discogs.com/sell/release/${album.id}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs underline text-gray-400"
+          >
+            Buy on Discogs
+          </a>
         </div>
 
         <div className="flex flex-col gap-2 shrink-0">
