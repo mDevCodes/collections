@@ -3,68 +3,98 @@ import { DiscogsSearchResponseSchema } from "../schemas/discogs.schemas";
 import splitTitle from "./splitTitle";
 import { SearchResponseSchema } from "@/schemas/collections.schemas";
 
+type DiscogsResult = z.infer<typeof DiscogsSearchResponseSchema>["results"][number];
+
+const BASE_PARAMS = {
+  token: process.env.DISCOGS_API_KEY!,
+  type: "release",
+  format: "Vinyl",
+  country: "US",
+};
+
+function isRealAlbum(result: DiscogsResult): boolean {
+  return (
+    Boolean(result.title) &&
+    result.format.includes("Album") &&
+    !result.format.includes("Unofficial Release")
+  );
+}
+
+// Discogs assigns the same master_id to every pressing/reissue of an album,
+// so this collapses e.g. 40 colored-vinyl variants of "Nevermind" down to
+// the single most-wanted pressing.
+function dedupeByMaster(results: DiscogsResult[]): DiscogsResult[] {
+  const groups = new Map<number, DiscogsResult>();
+  for (const result of results) {
+    if (!isRealAlbum(result)) continue;
+    const key = result.master_id || result.id;
+    const existing = groups.get(key);
+    if (!existing || (result.community?.want ?? 0) > (existing.community?.want ?? 0)) {
+      groups.set(key, result);
+    }
+  }
+  return Array.from(groups.values());
+}
+
 const discogs = {
   search: async (query: {
     search: string;
     page: string;
   }): Promise<z.infer<typeof SearchResponseSchema>> => {
-    // define url for GET API call
-    // type: "master" groups every pressing/reissue of an album under a single
-    // result, instead of returning each vinyl variant as its own entry
-    const searchParams = new URLSearchParams({
-      q: query.search,
-      type: "master",
-      token: process.env.DISCOGS_API_KEY!,
-      country: "US",
-      format: "Vinyl",
-      per_page: "40",
-      page: String(query.page),
-    });
+    const pageParams = { per_page: "25", page: String(query.page) };
 
-    const url = "https://api.discogs.com/database/search?" + searchParams;
+    // Discogs' generic full-text search matches labels/credits too (e.g.
+    // searching "Muse" pulls in unrelated jazz LPs on the "Muse" label), so
+    // we search the artist and release-title fields directly instead, and
+    // merge the two so both "search by artist" and "search by album title"
+    // work.
+    const artistUrl =
+      "https://api.discogs.com/database/search?" +
+      new URLSearchParams({ artist: query.search, ...BASE_PARAMS, ...pageParams });
+    const titleUrl =
+      "https://api.discogs.com/database/search?" +
+      new URLSearchParams({
+        release_title: query.search,
+        ...BASE_PARAMS,
+        ...pageParams,
+      });
 
-    // GET call to Discogs API
-    const result = await fetch(url);
-    const data = await result.json();
+    const [artistResult, titleResult] = await Promise.all([
+      fetch(artistUrl),
+      fetch(titleUrl),
+    ]);
+    const [artistJson, titleJson] = await Promise.all([
+      artistResult.json(),
+      titleResult.json(),
+    ]);
 
-    const narrowedData = DiscogsSearchResponseSchema.parse(data);
+    const artistData = DiscogsSearchResponseSchema.parse(artistJson);
+    const titleData = DiscogsSearchResponseSchema.parse(titleJson);
+
+    const combined = [
+      ...dedupeByMaster(artistData.results),
+      ...dedupeByMaster(titleData.results),
+    ];
+    const deduped = dedupeByMaster(combined);
+    // Discogs' community "want" count is a much better relevance signal
+    // than raw text-match ranking: it reliably surfaces the album someone
+    // actually meant instead of an obscure record that just shares a word.
+    deduped.sort((a, b) => (b.community?.want ?? 0) - (a.community?.want ?? 0));
 
     const searchResponseData = {
-      data: narrowedData.results
-        .filter(
-          (album) =>
-            Boolean(album.title) &&
-            album.format.includes("Album") &&
-            !album.format.includes("Unofficial Release")
-        )
-        // Discogs' relevance ranking surfaces plenty of unrelated albums
-        // that happen to share a word with the query; community "want"
-        // count is a much better proxy for "is this the album people meant"
-        .sort(
-          (a, b) => (b.community?.want ?? 0) - (a.community?.want ?? 0)
-        )
-        .map((album) => {
-          const [formatName, ...formatDescriptions] = album.format;
-          const result = {
-            id: album.id,
-            coverImage: album.cover_image,
-            albumTitle: splitTitle(album.title).album,
-            artist: splitTitle(album.title).artist,
-            year: album.year,
-            genre: album.genre?.[0],
-            formats: [
-              {
-                name: formatName ?? "Vinyl",
-                qty: "1",
-                descriptions: formatDescriptions,
-              },
-            ],
-          };
-          return result;
-        }),
-      currentPage: narrowedData.pagination.page,
+      data: deduped.map((album) => ({
+        id: album.id,
+        coverImage: album.cover_image,
+        albumTitle: splitTitle(album.title).album,
+        artist: splitTitle(album.title).artist,
+        year: album.year,
+        genre: album.genre?.[0],
+        formats: album.formats,
+      })),
+      currentPage: artistData.pagination.page,
       isLastPage:
-        narrowedData.pagination.page === narrowedData.pagination.pages,
+        artistData.pagination.page === artistData.pagination.pages &&
+        titleData.pagination.page === titleData.pagination.pages,
     };
 
     return searchResponseData;
