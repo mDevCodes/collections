@@ -22,6 +22,11 @@ export default function SearchResult({ searchValue }: { searchValue: string }) {
         });
         const res = await fetch("/api/search?" + params);
         const data = await res.json();
+        if (!res.ok) {
+          throw new Error(
+            typeof data?.error === "string" ? data.error : "Search failed"
+          );
+        }
         const parsedData = SearchResponseSchema.parse(data);
         return parsedData;
       },
@@ -33,6 +38,7 @@ export default function SearchResult({ searchValue }: { searchValue: string }) {
         return undefined;
       },
       enabled: query !== "",
+      retry: false,
     });
 
   const { data: collectionItems } = useCollectionItems("collection");
@@ -60,7 +66,11 @@ export default function SearchResult({ searchValue }: { searchValue: string }) {
   }
 
   if (error) {
-    return <h3 className="text-center text-text">Error</h3>;
+    return (
+      <h3 className="px-5 py-[60px] text-center text-text">
+        {error.message || "Something went wrong. Please try again."}
+      </h3>
+    );
   }
 
   const hasResults = (data?.pages[0]?.data.length ?? 0) > 0;
