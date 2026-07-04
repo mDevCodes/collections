@@ -2,17 +2,46 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+import clsx from "clsx";
 import useUser from "@/lib/supabase/useUser";
 import { createClient } from "@/lib/supabase/client";
+import { useCollectionItems } from "@/lib/hooks/useCollectionItems";
+import { useTheme } from "@/lib/theme/ThemeProvider";
+
+function SegmentButton({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={clsx(
+        "flex-1 rounded-[8px] py-[9px] text-center font-display text-[13px] font-semibold",
+        active
+          ? "bg-toggle-active text-text shadow-toggle-active"
+          : "bg-transparent text-muted"
+      )}
+    >
+      {children}
+    </button>
+  );
+}
 
 export default function UserProfile() {
   const router = useRouter();
   const { user, isLoading: isUserLoading } = useUser();
+  const { theme, setTheme } = useTheme();
+  const { data: collection } = useCollectionItems("collection");
+  const { data: wishlist } = useCollectionItems("wishlist");
   const [username, setUsername] = useState("");
   const [shareSlug, setShareSlug] = useState("");
   const [isSaving, setIsSaving] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
+  const [saved, setSaved] = useState(false);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -40,7 +69,7 @@ export default function UserProfile() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSaving(true);
-    setMessage(null);
+    setSaved(false);
 
     const supabase = createClient();
     const { error } = await supabase
@@ -49,77 +78,134 @@ export default function UserProfile() {
       .eq("id", user!.id);
 
     setIsSaving(false);
-    setMessage(error ? error.message : "Saved!");
+    setSaved(!error);
   };
+
+  const genreCount = new Set(
+    (collection ?? []).map((item) => item.genre).filter(Boolean)
+  ).size;
 
   const shareUrl =
     typeof window !== "undefined" && shareSlug
       ? `${window.location.origin}/u/${shareSlug}`
       : "";
 
+  const stats = [
+    { value: collection?.length ?? 0, label: "Records" },
+    { value: wishlist?.length ?? 0, label: "Wishlist" },
+    { value: genreCount, label: "Genres" },
+  ];
+
   if (isUserLoading || !user) {
     return null;
   }
 
   return (
-    <div className="w-full max-w-md mx-auto px-4">
-      <h1 className="text-3xl font-heading mt-10 mb-6">Profile</h1>
-
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <div className="flex flex-col">
-          <label htmlFor="username">Display name</label>
-          <input
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="rounded-md mt-1 text-black p-1 pl-2.5"
-          />
+    <main className="mx-auto max-w-[560px] px-[18px] pb-24 pt-6 dt:px-8 dt:pb-20 dt:pt-10">
+      <div className="mb-7 flex items-center gap-[18px]">
+        <div className="h-[66px] w-[66px] shrink-0 rounded-full bg-gradient-to-br from-accent to-[#d98a4a]" />
+        <div className="min-w-0">
+          <h1 className="mb-[3px] font-display text-[clamp(26px,6vw,34px)] font-extrabold leading-[1.05] tracking-[-0.03em] text-text">
+            {username || "…"}
+          </h1>
+          <p className="truncate text-[14px] text-muted">{shareUrl}</p>
         </div>
+      </div>
 
-        {message ? <p className="text-sm text-green-400">{message}</p> : null}
+      <div className="mb-[34px] flex gap-[34px] border-y border-divider py-5">
+        {stats.map((stat) => (
+          <div key={stat.label}>
+            <p className="mb-[3px] font-display text-[24px] font-extrabold leading-none tracking-[-0.02em] text-text">
+              {stat.value}
+            </p>
+            <p className="text-[13px] text-muted">{stat.label}</p>
+          </div>
+        ))}
+      </div>
 
-        <button
-          type="submit"
-          disabled={isSaving}
-          className="border-2 border-gray-800 rounded-xl p-2 disabled:opacity-50 w-fit"
+      <form onSubmit={handleSubmit}>
+        <label
+          htmlFor="username"
+          className="mb-2 block font-display text-[14px] font-semibold text-text"
         >
-          {isSaving ? "Saving..." : "Save"}
-        </button>
+          Display name
+        </label>
+        <input
+          id="username"
+          value={username}
+          onChange={(e) => {
+            setUsername(e.target.value);
+            setSaved(false);
+          }}
+          className="mb-[14px] w-full rounded-[10px] border border-field-border bg-field px-4 py-[13px] font-body text-[15px] text-text outline-none"
+        />
+        <div className="flex items-center gap-[14px]">
+          <button
+            type="submit"
+            disabled={isSaving}
+            className="rounded-full bg-accent px-6 py-[11px] font-display text-[14px] font-semibold text-accent-text disabled:opacity-50"
+          >
+            {isSaving ? "Saving..." : "Save changes"}
+          </button>
+          {saved ? <span className="text-[14px] text-accent">Saved!</span> : null}
+        </div>
       </form>
 
-      <div className="mt-8">
-        <p className="font-bold mb-1">Share your collection & wishlist</p>
-        <p className="text-sm text-gray-400 mb-2">
-          Anyone with this link can view your collection and wishlist — no
-          account needed. Great for sending to friends and family.
+      <div className="mt-9 rounded-[14px] border border-border bg-surface p-[22px]">
+        <p className="mb-[6px] font-display text-[16px] font-semibold text-text">
+          Share your collection &amp; wishlist
         </p>
-        <div className="flex gap-2 items-center">
-          <Link href={`/u/${shareSlug}`} className="underline break-all text-sm">
+        <p className="mb-4 text-[14px] leading-[1.5] text-muted">
+          Anyone with this link can view your records — no account needed. Great
+          for friends, family, and fellow diggers.
+        </p>
+        <div className="flex flex-wrap items-center gap-[10px]">
+          <div className="min-w-[180px] flex-grow truncate rounded-[10px] border border-field-border bg-field px-[15px] py-[11px] text-[14px] text-muted-2">
             {shareUrl}
-          </Link>
+          </div>
           <button
             onClick={() => {
               navigator.clipboard.writeText(shareUrl);
               setCopied(true);
               setTimeout(() => setCopied(false), 1500);
             }}
-            className="text-xs border-2 border-gray-800 rounded-xl px-2 py-1 shrink-0"
+            className="shrink-0 rounded-[10px] border border-pill-border px-[18px] py-[11px] font-display text-[14px] font-semibold text-text"
           >
             {copied ? "Copied!" : "Copy"}
           </button>
         </div>
+        <a
+          href={`/u/${shareSlug}`}
+          className="mt-[14px] block font-display text-[14px] font-semibold text-accent"
+        >
+          Preview public page →
+        </a>
       </div>
 
-      <button
-        onClick={() => {
-          createClient()
-            .auth.signOut()
-            .then(() => router.push("/"));
-        }}
-        className="mt-10 border-2 border-gray-800 rounded-xl px-3 py-1"
-      >
-        Sign Out
-      </button>
-    </div>
+      <p className="mb-[10px] mt-9 font-display text-[16px] font-semibold text-text">
+        Appearance
+      </p>
+      <div className="flex max-w-[280px] gap-[6px] rounded-[11px] border border-border bg-toggle-bg p-[5px]">
+        <SegmentButton active={theme === "light"} onClick={() => setTheme("light")}>
+          Light
+        </SegmentButton>
+        <SegmentButton active={theme === "dark"} onClick={() => setTheme("dark")}>
+          Dark
+        </SegmentButton>
+      </div>
+
+      <div className="mt-9">
+        <button
+          onClick={() => {
+            createClient()
+              .auth.signOut()
+              .then(() => router.push("/"));
+          }}
+          className="rounded-full border border-pill-border px-5 py-[10px] font-display text-[14px] font-semibold text-text"
+        >
+          Sign out
+        </button>
+      </div>
+    </main>
   );
 }

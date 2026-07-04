@@ -2,6 +2,11 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Album, CollectionItem, ListType } from "@/schemas/collections.schemas";
 import useUser from "@/lib/supabase/useUser";
 
+export type AddableAlbum = Pick<
+  Album,
+  "id" | "albumTitle" | "artist" | "coverImage" | "year" | "genre"
+>;
+
 export function useCollectionItems(listType: ListType) {
   const { user } = useUser();
 
@@ -24,7 +29,7 @@ export function useToggleCollectionItem(listType: ListType) {
     queryClient.invalidateQueries({ queryKey: ["collection-items", listType] });
 
   const add = useMutation({
-    mutationFn: async (album: Album) => {
+    mutationFn: async (album: AddableAlbum) => {
       const res = await fetch("/api/collection-items", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -35,6 +40,7 @@ export function useToggleCollectionItem(listType: ListType) {
           artist: album.artist,
           coverImage: album.coverImage,
           year: album.year ?? null,
+          genre: album.genre ?? null,
         }),
       });
       if (!res.ok) throw new Error("Failed to save item");

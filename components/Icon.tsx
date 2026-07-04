@@ -1,7 +1,21 @@
 import clsx from "clsx";
 
 type Props = {
-  type: "search" | "no-img" | "clear" | "heart" | "heart-filled" | "plus" | "check";
+  type:
+    | "search"
+    | "no-img"
+    | "clear"
+    | "heart"
+    | "heart-filled"
+    | "plus"
+    | "check"
+    | "grid"
+    | "list"
+    | "sun"
+    | "moon"
+    | "home"
+    | "user"
+    | "disc";
   className?: string;
   size?: "xsmall" | "small" | "medium";
 };
@@ -107,6 +121,127 @@ export default function Icon({ type, className, size = "medium" }: Props) {
         stroke="currentColor"
       >
         <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+      </svg>
+    );
+  }
+
+  if (type === "grid") {
+    return (
+      <svg
+        className={clsx(sizes[size], className)}
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={1.8}
+        stroke="currentColor"
+      >
+        <rect x="3" y="3" width="7" height="7" rx="1" />
+        <rect x="14" y="3" width="7" height="7" rx="1" />
+        <rect x="3" y="14" width="7" height="7" rx="1" />
+        <rect x="14" y="14" width="7" height="7" rx="1" />
+      </svg>
+    );
+  }
+
+  if (type === "list") {
+    return (
+      <svg
+        className={clsx(sizes[size], className)}
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={1.8}
+        stroke="currentColor"
+      >
+        <line x1="8" y1="6" x2="21" y2="6" />
+        <line x1="8" y1="12" x2="21" y2="12" />
+        <line x1="8" y1="18" x2="21" y2="18" />
+        <line x1="3" y1="6" x2="3.01" y2="6" />
+        <line x1="3" y1="12" x2="3.01" y2="12" />
+        <line x1="3" y1="18" x2="3.01" y2="18" />
+      </svg>
+    );
+  }
+
+  if (type === "sun") {
+    return (
+      <svg
+        className={clsx(sizes[size], className)}
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={1.8}
+        stroke="currentColor"
+      >
+        <circle cx="12" cy="12" r="4" />
+        <line x1="12" y1="2" x2="12" y2="5" />
+        <line x1="12" y1="19" x2="12" y2="22" />
+        <line x1="2" y1="12" x2="5" y2="12" />
+        <line x1="19" y1="12" x2="22" y2="12" />
+        <line x1="4.9" y1="4.9" x2="6.8" y2="6.8" />
+        <line x1="17.2" y1="17.2" x2="19.1" y2="19.1" />
+        <line x1="4.9" y1="19.1" x2="6.8" y2="17.2" />
+        <line x1="17.2" y1="6.8" x2="19.1" y2="4.9" />
+      </svg>
+    );
+  }
+
+  if (type === "moon") {
+    return (
+      <svg
+        className={clsx(sizes[size], className)}
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={1.8}
+        stroke="currentColor"
+      >
+        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+      </svg>
+    );
+  }
+
+  if (type === "home") {
+    return (
+      <svg
+        className={clsx(sizes[size], className)}
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={1.7}
+        stroke="currentColor"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M3 10.5 12 3l9 7.5"
+        />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M5.5 9.5V20h13V9.5" />
+      </svg>
+    );
+  }
+
+  if (type === "user") {
+    return (
+      <svg
+        className={clsx(sizes[size], className)}
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={1.7}
+        stroke="currentColor"
+      >
+        <circle cx="12" cy="8" r="4" />
+        <path strokeLinecap="round" d="M4 20c0-3.3 3.6-5.5 8-5.5s8 2.2 8 5.5" />
+      </svg>
+    );
+  }
+
+  if (type === "disc") {
+    return (
+      <svg
+        className={clsx(sizes[size], className)}
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={1.6}
+        stroke="currentColor"
+      >
+        <circle cx="12" cy="12" r="9" />
+        <circle cx="12" cy="12" r="2.5" />
       </svg>
     );
   }

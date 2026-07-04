@@ -1,6 +1,6 @@
-import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
-import Icon from "@/components/Icon";
+import Cover from "@/components/Cover";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
@@ -16,31 +16,22 @@ type CollectionItemRow = {
 
 function ItemGrid({ items }: { items: CollectionItemRow[] }) {
   if (items.length === 0) {
-    return <p className="text-gray-400 mb-8">Nothing here yet.</p>;
+    return <p className="mb-11 text-[14px] text-muted">Nothing here yet.</p>;
   }
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-10">
+    <div className="mb-11 grid grid-cols-2 gap-[22px_18px] dt:grid-cols-[repeat(auto-fill,minmax(150px,1fr))]">
       {items.map((item) => (
-        <div key={item.id} className="text-sm">
-          <div className="relative w-full aspect-square overflow-hidden mb-2">
-            {item.cover_image ? (
-              <Image
-                className="rounded-sm object-cover w-full"
-                src={item.cover_image}
-                alt={`${item.album_title} cover image`}
-                fill
-              />
-            ) : (
-              <Icon
-                className="w-full h-full text-white bg-gray-800 p-7"
-                type="no-img"
-                size="medium"
-              />
-            )}
-          </div>
-          <p className="font-bold">{item.album_title}</p>
-          <p>{item.artist}</p>
+        <div key={item.id}>
+          <Cover
+            src={item.cover_image}
+            alt={`${item.album_title} cover image`}
+            className="relative mb-[10px] aspect-square overflow-hidden rounded-[7px] shadow-cover"
+          />
+          <p className="mb-px font-display text-[13px] font-semibold leading-[1.2] text-text">
+            {item.album_title}
+          </p>
+          <p className="text-[12px] text-muted">{item.artist}</p>
         </div>
       ))}
     </div>
@@ -80,16 +71,33 @@ export default async function SharedCollectionPage({
   const wishlist = (items ?? []).filter((item) => item.list_type === "wishlist");
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-4">
-      <h1 className="text-3xl font-heading mt-10 mb-8">
-        {profile.username}&apos;s Collection
-      </h1>
+    <main className="mx-auto max-w-[1160px] px-[18px] pb-24 pt-6 dt:px-8 dt:pb-20 dt:pt-10">
+      <Link
+        href="/user-profile"
+        className="mb-[22px] inline-block font-display text-[14px] font-medium text-muted"
+      >
+        ← Back to profile
+      </Link>
 
-      <h2 className="text-xl font-bold mb-4">Wishlist</h2>
+      <div className="mb-10 flex items-center gap-4">
+        <div className="h-12 w-12 shrink-0 rounded-full bg-gradient-to-br from-accent to-[#d98a4a]" />
+        <div>
+          <h1 className="mb-1 font-display text-[clamp(26px,6vw,34px)] font-extrabold leading-[1.05] tracking-[-0.03em] text-text">
+            {profile.username}&apos;s Collection
+          </h1>
+          <p className="text-[15px] text-muted">A public collection on Collections</p>
+        </div>
+      </div>
+
+      <h2 className="mb-[18px] font-display text-[14px] font-bold uppercase tracking-[0.04em] text-muted">
+        Wishlist · {wishlist.length}
+      </h2>
       <ItemGrid items={wishlist} />
 
-      <h2 className="text-xl font-bold mb-4">Collection</h2>
+      <h2 className="mb-[18px] font-display text-[14px] font-bold uppercase tracking-[0.04em] text-muted">
+        Collection · {collection.length}
+      </h2>
       <ItemGrid items={collection} />
-    </div>
+    </main>
   );
 }

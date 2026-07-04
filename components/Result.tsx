@@ -1,8 +1,35 @@
-import Image from "next/image";
 import Link from "next/link";
+import clsx from "clsx";
 import Icon from "./Icon";
+import Cover from "./Cover";
 import { Album } from "@/schemas/collections.schemas";
-import concatAlbumDescription from "@/utils/getFormatsDescription";
+
+function ActionButton({
+  active,
+  icon,
+  label,
+  onClick,
+}: {
+  active: boolean;
+  icon: "check" | "plus" | "heart" | "heart-filled";
+  label: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={clsx(
+        "flex flex-1 items-center justify-center gap-[7px] whitespace-nowrap rounded-full px-[15px] py-[9px] font-display text-[13px] font-semibold dt:min-w-[152px] dt:flex-none",
+        active
+          ? "border border-accent bg-accent text-accent-text"
+          : "border border-pill-border bg-transparent text-text"
+      )}
+    >
+      <Icon type={icon} size="xsmall" />
+      {label}
+    </button>
+  );
+}
 
 export default function Result({
   album,
@@ -20,77 +47,48 @@ export default function Result({
   onToggleWishlist: () => void;
 }) {
   return (
-    <div className="flex w-full gap-6 mb-5 pb-5 border-b border-solid border-gray-800">
-      <div className="relative w-24 h-24 lg:w-36 lg:h-36 shrink-0 overflow-hidden">
-        {album.coverImage.endsWith(".gif") ? (
-          <Icon
-            className="w-full h-full text-white bg-gray-800 p-7 lg:p-10"
-            type="no-img"
-            size="medium"
-          />
-        ) : (
-          <Image
-            className="rounded-sm object-cover w-full"
-            src={album.coverImage}
-            alt={`${album.albumTitle} cover image`}
-            fill
-          />
-        )}
+    <div className="flex flex-wrap items-start gap-[14px] border-b border-divider py-4 dt:flex-nowrap dt:items-center dt:gap-[22px] dt:py-5">
+      <Cover
+        src={album.coverImage}
+        alt={`${album.albumTitle} cover image`}
+        className="relative shrink-0 overflow-hidden rounded-[6px] shadow-cover"
+        style={{ width: "clamp(72px,20vw,96px)", height: "clamp(72px,20vw,96px)" }}
+      />
+
+      <div className="min-w-[120px] flex-grow">
+        <p className="mb-[3px] font-display text-[17px] font-semibold tracking-[-0.01em] text-text">
+          {album.albumTitle}
+        </p>
+        <p className="mb-[3px] text-[15px] text-text">{album.artist}</p>
+        <p className="text-[13px] text-muted">
+          {album.year ? album.year : "—"}
+          {album.genre ? ` · ${album.genre}` : ""}
+        </p>
       </div>
 
-      <div className="flex grow justify-between gap-3">
-        <div>
-          <div className="text-sm max-w-[250px] md:max-w-full">
-            <p className="lg:text-xl font-bold">{album.albumTitle}</p>
-            <p>{album.artist}</p>
-            <p className="text-gray-400">{album.year ? album.year : "-"}</p>
-          </div>
-          <p className="text-xs mt-1">
-            {concatAlbumDescription(album.formats)}
-          </p>
+      {isSignedIn ? (
+        <div className="flex w-full flex-none basis-full gap-[9px] dt:w-auto dt:basis-auto dt:flex-col">
+          <ActionButton
+            active={isInCollection}
+            icon={isInCollection ? "check" : "plus"}
+            label={isInCollection ? "In Collection" : "Add to Collection"}
+            onClick={onToggleCollection}
+          />
+          <ActionButton
+            active={isInWishlist}
+            icon={isInWishlist ? "heart-filled" : "heart"}
+            label={isInWishlist ? "In Wishlist" : "Add to Wishlist"}
+            onClick={onToggleWishlist}
+          />
         </div>
-
-        <div className="flex flex-col gap-2 shrink-0">
-          {isSignedIn ? (
-            <>
-              <button
-                onClick={onToggleCollection}
-                title={
-                  isInCollection ? "Remove from collection" : "Add to collection"
-                }
-                className="flex items-center gap-1 text-xs border-2 border-gray-800 rounded-xl px-2 py-1"
-              >
-                <Icon type={isInCollection ? "check" : "plus"} size="xsmall" />
-                <span className="hidden sm:inline">
-                  {isInCollection ? "In collection" : "Collection"}
-                </span>
-              </button>
-              <button
-                onClick={onToggleWishlist}
-                title={
-                  isInWishlist ? "Remove from wishlist" : "Add to wishlist"
-                }
-                className="flex items-center gap-1 text-xs border-2 border-gray-800 rounded-xl px-2 py-1"
-              >
-                <Icon
-                  type={isInWishlist ? "heart-filled" : "heart"}
-                  size="xsmall"
-                />
-                <span className="hidden sm:inline">
-                  {isInWishlist ? "In wishlist" : "Wishlist"}
-                </span>
-              </button>
-            </>
-          ) : (
-            <Link
-              href="/login"
-              className="text-xs underline text-gray-400 whitespace-nowrap"
-            >
-              Sign in to save
-            </Link>
-          )}
-        </div>
-      </div>
+      ) : (
+        <Link
+          href="/login"
+          className="whitespace-nowrap text-[13px] font-medium text-muted underline"
+        >
+          Sign in to save
+        </Link>
+      )}
     </div>
   );
 }

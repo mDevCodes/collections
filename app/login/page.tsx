@@ -51,47 +51,53 @@ export default function Login() {
 
   return (
     <form
-      className="flex flex-col mx-auto max-w-md mt-6 w-full px-4 gap-4"
+      className="mx-auto mt-10 flex w-full max-w-md flex-col gap-4 px-[18px]"
       onSubmit={handleSubmit}
     >
-      <h1 className="text-2xl font-heading">Sign in</h1>
+      <h1 className="mb-2 font-display text-[28px] font-extrabold tracking-[-0.02em] text-text">
+        Sign in
+      </h1>
 
-      <div className="flex flex-col">
-        <label htmlFor="email">Email</label>
+      <div className="flex flex-col gap-2">
+        <label htmlFor="email" className="font-display text-[14px] font-semibold text-text">
+          Email
+        </label>
         <input
           type="email"
           name="email"
           id="email"
           required
           placeholder="Email"
-          className="rounded-md mt-1 text-black p-1 pl-2.5"
+          className="rounded-[10px] border border-field-border bg-field px-4 py-[13px] font-body text-[15px] text-text outline-none"
         />
       </div>
-      <div className="flex flex-col">
-        <label htmlFor="password">Password</label>
+      <div className="flex flex-col gap-2">
+        <label htmlFor="password" className="font-display text-[14px] font-semibold text-text">
+          Password
+        </label>
         <input
           type="password"
           name="password"
           id="password"
           required
           placeholder="Password"
-          className="rounded-md mt-1 text-black p-1 pl-2.5"
+          className="rounded-[10px] border border-field-border bg-field px-4 py-[13px] font-body text-[15px] text-text outline-none"
         />
       </div>
 
-      {error ? <p className="text-red-400 text-sm">{error}</p> : null}
+      {error ? <p className="text-sm text-accent">{error}</p> : null}
 
       <button
         type="submit"
         disabled={isSubmitting}
-        className="border-2 border-gray-800 rounded-xl p-2 disabled:opacity-50"
+        className="rounded-full bg-accent px-6 py-[11px] font-display text-[14px] font-semibold text-accent-text disabled:opacity-50"
       >
         {isSubmitting ? "Signing in..." : "Sign In"}
       </button>
 
-      <p className="text-sm">
+      <p className="text-[14px] text-muted">
         Need an account?{" "}
-        <Link href="/register" className="underline">
+        <Link href="/register" className="font-semibold text-accent underline">
           Register
         </Link>
       </p>

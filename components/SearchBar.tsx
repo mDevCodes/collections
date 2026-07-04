@@ -15,17 +15,17 @@ export default function SearchBar({
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   return (
-    <div className="flex gap-2 w-full mt-10 mb-10 lg:mb-14 lg:mt-14 relative">
+    <div className="relative mb-[34px] mt-[18px]">
       <Icon
         type="search"
-        className="absolute top-[11px] left-3.5 text-black"
-        size="xsmall"
+        className="pointer-events-none absolute left-[18px] top-1/2 -translate-y-1/2 text-muted"
+        size="small"
       />
       <input
         id="search"
         type="text"
         placeholder="Search for your favorite records"
-        className="grow pl-10 py-2 rounded-xl text-black"
+        className="w-full rounded-full border border-field-border bg-field py-[15px] pl-[50px] pr-12 font-body text-[16px] text-text outline-none"
         onChange={(e) => onSearch(e.target.value)}
         value={searchValue}
         ref={inputRef}
@@ -36,18 +36,12 @@ export default function SearchBar({
             onClear();
             inputRef.current?.focus();
           }}
+          aria-label="Clear search"
+          className="absolute right-4 top-1/2 -translate-y-1/2 text-muted"
         >
-          <Icon
-            type="clear"
-            className="absolute top-2.5 right-24 text-black"
-            size="small"
-          />
+          <Icon type="clear" size="small" />
         </button>
       ) : null}
-
-      <button className="px-2 border-2 border-gray-800 rounded-xl">
-        Search
-      </button>
     </div>
   );
 }
