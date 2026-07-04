@@ -21,6 +21,14 @@ export async function GET(
     );
   }
 
-  const res = await discogs.search(query);
-  return NextResponse.json(res);
+  try {
+    const res = await discogs.search(query);
+    return NextResponse.json(res);
+  } catch (error) {
+    console.error("Discogs search failed:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch search results" },
+      { status: 502 }
+    );
+  }
 }
