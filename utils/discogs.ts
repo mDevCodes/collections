@@ -17,7 +17,10 @@ const discogs = {
       token: process.env.DISCOGS_API_KEY!,
       country: "US",
       format: "Vinyl",
-      per_page: "10",
+      // Fetch a wider pool per page so ranking/deduping has enough real
+      // matches to promote -- with only 10 raw results, an artist search
+      // can easily come back with zero genuine matches to re-rank at all.
+      per_page: "50",
       page: String(query.page),
     });
 
