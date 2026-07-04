@@ -139,12 +139,46 @@ function mapAlbum(album: DiscogsResult & Partial<MasterDetails>) {
   };
 }
 
-// An exact artist-name match is only trustworthy when it's actually the
-// more popular match - otherwise the query is probably an album title (e.g.
+// An artist-name match is only trustworthy when it's actually the more
+// popular match - otherwise the query is probably an album title (e.g.
 // "Nevermind") that happens to collide with some obscure, unrelated artist
 // of the same name, and want-based ranking should win instead.
 const maxWant = (albums: DiscogsResult[]) =>
   Math.max(0, ...albums.map((album) => album.community?.want ?? 0));
+
+// Since this is a type-as-you-go search box, most searches are mid-typed
+// (e.g. "tame" while typing "tame impala"), so requiring an exact artist
+// name match would mean the discography view rarely appears. Match on
+// prefix instead, but group candidates by their exact artist name and only
+// trust the most popular group - otherwise "tame" would blend Tame Impala's
+// albums together with those of two unrelated, obscure acts also named
+// "Tame (2)" and "Tame One".
+function findLeadingArtistMatch(
+  results: DiscogsResult[],
+  normalizedQuery: string
+): DiscogsResult[] {
+  if (!normalizedQuery) return [];
+  const groups = new Map<string, DiscogsResult[]>();
+  for (const result of results) {
+    const artist = splitTitle(result.title).artist.trim();
+    if (!artist.toLowerCase().startsWith(normalizedQuery)) continue;
+    const key = artist.toLowerCase();
+    const group = groups.get(key);
+    if (group) {
+      group.push(result);
+    } else {
+      groups.set(key, [result]);
+    }
+  }
+
+  let leadingGroup: DiscogsResult[] = [];
+  for (const group of Array.from(groups.values())) {
+    if (maxWant(group) > maxWant(leadingGroup)) {
+      leadingGroup = group;
+    }
+  }
+  return leadingGroup;
+}
 
 const discogs = {
   search: async (query: {
@@ -152,13 +186,12 @@ const discogs = {
     page: string;
   }): Promise<z.infer<typeof SearchResponseSchema>> => {
     const normalizedQuery = query.search.trim().toLowerCase();
-    const isExactArtistMatch = (result: DiscogsResult) =>
-      splitTitle(result.title).artist.trim().toLowerCase() === normalizedQuery;
 
-    // The first page builds a complete, chronological discography for an
-    // exact artist match. Later "More Results" pages just page through the
-    // looser album-title matches - the discography itself was already
-    // delivered in full on page 1, so there's nothing more of it to fetch.
+    // The first page builds a complete, chronological discography for the
+    // artist the query most likely refers to. Later "More Results" pages
+    // just page through the looser album-title matches - the discography
+    // itself was already delivered in full on page 1, so there's nothing
+    // more of it to fetch.
     if (query.page === "1" || !query.page) {
       const per_page = "25";
       const artistPages = await Promise.all(
@@ -179,19 +212,21 @@ const discogs = {
       });
 
       const artistResults = dedupeByMaster(artistPages.flatMap((page) => page.results));
-      const discography = artistResults.filter(isExactArtistMatch);
+      // artistResults is already deduped by master_id across every artist
+      // name in it, so the leading group is too - no need to dedupe again.
+      const discography = findLeadingArtistMatch(artistResults, normalizedQuery);
       const discographyKeys = new Set(
         discography.map((album) => album.master_id || album.id)
       );
 
       const otherMatchesRaw = dedupeByMaster([
-        ...artistResults.filter((album) => !isExactArtistMatch(album)),
+        ...artistResults,
         ...dedupeByMaster(titleData.results),
       ]).filter((album) => !discographyKeys.has(album.master_id || album.id));
-      // A pure album-title search (e.g. "Nevermind") never has an exact
-      // artist-name match, so its correct answer always lands here rather
-      // than in the discography bucket - only enrich the few likely to
-      // actually be that answer, to keep this bucket cheap.
+      // A pure album-title search (e.g. "Nevermind") never has a matching
+      // artist name, so its correct answer always lands here rather than in
+      // the discography bucket - only enrich the few likely to actually be
+      // that answer, to keep this bucket cheap.
       otherMatchesRaw.sort((a, b) => (b.community?.want ?? 0) - (a.community?.want ?? 0));
       const otherMatches = [
         ...(await enrichWithMasterDetails(otherMatchesRaw.slice(0, 3))),
