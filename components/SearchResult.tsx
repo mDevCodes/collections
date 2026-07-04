@@ -20,6 +20,11 @@ export default function SearchResult({ searchValue }: { searchValue: string }) {
         });
         const res = await fetch("/api/search?" + params);
         const data = await res.json();
+        if (!res.ok) {
+          throw new Error(
+            typeof data?.error === "string" ? data.error : "Search failed"
+          );
+        }
         const parsedData = SearchResponseSchema.parse(data);
         return parsedData;
       },
@@ -30,6 +35,7 @@ export default function SearchResult({ searchValue }: { searchValue: string }) {
         }
         return undefined;
       },
+      retry: false,
     });
 
   const { data: collectionItems } = useCollectionItems("collection");
@@ -43,7 +49,7 @@ export default function SearchResult({ searchValue }: { searchValue: string }) {
   const wishlistIds = new Set(wishlistItems?.map((item) => item.discogsId));
 
   if (error) {
-    return <h3>Error</h3>;
+    return <h3>{error.message || "Something went wrong. Please try again."}</h3>;
   }
 
   return (
