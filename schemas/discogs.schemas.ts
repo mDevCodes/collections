@@ -12,14 +12,13 @@ const DiscogsSearchResponseSchema = z.object({
       title: z.string(),
       year: z.string().optional(),
       genre: z.array(z.string()).optional(),
-      formats: z.array(
-        z.object({
-          name: z.string(),
-          qty: z.string(),
-          text: z.string().optional(),
-          descriptions: z.string().array().optional(),
+      format: z.array(z.string()),
+      community: z
+        .object({
+          want: z.number(),
+          have: z.number(),
         })
-      ),
+        .optional(),
     })
   ),
 });

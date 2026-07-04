@@ -9,13 +9,15 @@ const discogs = {
     page: string;
   }): Promise<z.infer<typeof SearchResponseSchema>> => {
     // define url for GET API call
+    // type: "master" groups every pressing/reissue of an album under a single
+    // result, instead of returning each vinyl variant as its own entry
     const searchParams = new URLSearchParams({
       q: query.search,
-      type: "release",
+      type: "master",
       token: process.env.DISCOGS_API_KEY!,
       country: "US",
       format: "Vinyl",
-      per_page: "10",
+      per_page: "40",
       page: String(query.page),
     });
 
@@ -29,8 +31,20 @@ const discogs = {
 
     const searchResponseData = {
       data: narrowedData.results
-        .filter((album) => Boolean(album.title))
+        .filter(
+          (album) =>
+            Boolean(album.title) &&
+            album.format.includes("Album") &&
+            !album.format.includes("Unofficial Release")
+        )
+        // Discogs' relevance ranking surfaces plenty of unrelated albums
+        // that happen to share a word with the query; community "want"
+        // count is a much better proxy for "is this the album people meant"
+        .sort(
+          (a, b) => (b.community?.want ?? 0) - (a.community?.want ?? 0)
+        )
         .map((album) => {
+          const [formatName, ...formatDescriptions] = album.format;
           const result = {
             id: album.id,
             coverImage: album.cover_image,
@@ -38,7 +52,13 @@ const discogs = {
             artist: splitTitle(album.title).artist,
             year: album.year,
             genre: album.genre?.[0],
-            formats: album.formats,
+            formats: [
+              {
+                name: formatName ?? "Vinyl",
+                qty: "1",
+                descriptions: formatDescriptions,
+              },
+            ],
           };
           return result;
         }),
