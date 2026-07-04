@@ -71,18 +71,48 @@ const discogs = {
     const artistData = DiscogsSearchResponseSchema.parse(artistJson);
     const titleData = DiscogsSearchResponseSchema.parse(titleJson);
 
-    const combined = [
-      ...dedupeByMaster(artistData.results),
+    // Discogs disambiguates unrelated artists that happen to share a name
+    // with a suffix (e.g. "Muse (9)", "Muse (10)"), so an exact,
+    // case-insensitive match against the query reliably isolates the actual
+    // artist's own catalog from name collisions.
+    const normalizedQuery = query.search.trim().toLowerCase();
+    const isExactArtistMatch = (result: DiscogsResult) =>
+      splitTitle(result.title).artist.trim().toLowerCase() === normalizedQuery;
+
+    const artistResults = dedupeByMaster(artistData.results);
+    const discography = artistResults.filter(isExactArtistMatch);
+    const discographyKeys = new Set(
+      discography.map((album) => album.master_id || album.id)
+    );
+
+    const otherMatches = dedupeByMaster([
+      ...artistResults.filter((album) => !isExactArtistMatch(album)),
       ...dedupeByMaster(titleData.results),
-    ];
-    const deduped = dedupeByMaster(combined);
-    // Discogs' community "want" count is a much better relevance signal
-    // than raw text-match ranking: it reliably surfaces the album someone
-    // actually meant instead of an obscure record that just shares a word.
-    deduped.sort((a, b) => (b.community?.want ?? 0) - (a.community?.want ?? 0));
+    ]).filter((album) => !discographyKeys.has(album.master_id || album.id));
+
+    // An exact artist-name match is only trustworthy when it's actually
+    // the more popular match - otherwise the query is probably an album
+    // title (e.g. "Nevermind") that happens to collide with some obscure,
+    // unrelated artist of the same name, and want-based ranking should win.
+    const maxWant = (albums: DiscogsResult[]) =>
+      Math.max(0, ...albums.map((album) => album.community?.want ?? 0));
+
+    let sortedResults: DiscogsResult[];
+    if (discography.length > 0 && maxWant(discography) >= maxWant(otherMatches)) {
+      // The searched artist's own catalog reads like a discography, sorted
+      // newest-first; everything else is a looser match ranked by Discogs'
+      // community "want" count as a relevance proxy instead.
+      discography.sort((a, b) => Number(b.year ?? 0) - Number(a.year ?? 0));
+      otherMatches.sort((a, b) => (b.community?.want ?? 0) - (a.community?.want ?? 0));
+      sortedResults = [...discography, ...otherMatches];
+    } else {
+      sortedResults = [...discography, ...otherMatches].sort(
+        (a, b) => (b.community?.want ?? 0) - (a.community?.want ?? 0)
+      );
+    }
 
     const searchResponseData = {
-      data: deduped.map((album) => ({
+      data: sortedResults.map((album) => ({
         id: album.id,
         coverImage: album.cover_image,
         albumTitle: splitTitle(album.title).album,
