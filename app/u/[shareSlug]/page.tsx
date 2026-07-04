@@ -41,6 +41,14 @@ function ItemGrid({ items }: { items: CollectionItemRow[] }) {
           </div>
           <p className="font-bold">{item.album_title}</p>
           <p>{item.artist}</p>
+          <a
+            href={`https://www.discogs.com/sell/release/${item.discogs_id}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline text-gray-400"
+          >
+            Buy on Discogs
+          </a>
         </div>
       ))}
     </div>

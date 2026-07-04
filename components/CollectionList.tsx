@@ -72,6 +72,14 @@ export default function CollectionList({
               <p className="font-bold">{item.albumTitle}</p>
               <p>{item.artist}</p>
               <p className="text-gray-400">{item.year ?? "-"}</p>
+              <a
+                href={`https://www.discogs.com/sell/release/${item.discogsId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs underline text-gray-400"
+              >
+                Buy on Discogs
+              </a>
             </div>
 
             <button

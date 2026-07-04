@@ -16,6 +16,8 @@ const AlbumSchema = z.object({
   artist: z.string(),
   year: z.string().optional(),
   formats: FormatsSchema,
+  masterId: z.number().optional(),
+  pressingCount: z.number().optional(),
 });
 
 export type Album = z.infer<typeof AlbumSchema>;
