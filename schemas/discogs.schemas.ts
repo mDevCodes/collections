@@ -8,10 +8,12 @@ const DiscogsSearchResponseSchema = z.object({
   results: z.array(
     z.object({
       id: z.number(),
+      master_id: z.number().optional(),
       cover_image: z.string(),
       title: z.string(),
       year: z.string().optional(),
       genre: z.array(z.string()).optional(),
+      format: z.array(z.string()),
       formats: z.array(
         z.object({
           name: z.string(),
@@ -20,6 +22,12 @@ const DiscogsSearchResponseSchema = z.object({
           descriptions: z.string().array().optional(),
         })
       ),
+      community: z
+        .object({
+          want: z.number(),
+          have: z.number(),
+        })
+        .optional(),
     })
   ),
 });
