@@ -17,6 +17,7 @@ const CreateItemSchema = z.object({
   artist: z.string(),
   coverImage: z.string().nullable().optional(),
   year: z.string().nullable().optional(),
+  genre: z.string().nullable().optional(),
 });
 
 function toCollectionItem(row: {
@@ -27,6 +28,7 @@ function toCollectionItem(row: {
   artist: string;
   cover_image: string | null;
   year: string | null;
+  genre: string | null;
 }): CollectionItem {
   return {
     id: row.id,
@@ -36,6 +38,7 @@ function toCollectionItem(row: {
     artist: row.artist,
     coverImage: row.cover_image,
     year: row.year,
+    genre: row.genre,
   };
 }
 
@@ -56,7 +59,9 @@ export async function GET(request: Request) {
 
   const { data, error } = await supabase
     .from("collection_items")
-    .select("id, discogs_id, list_type, album_title, artist, cover_image, year")
+    .select(
+      "id, discogs_id, list_type, album_title, artist, cover_image, year, genre"
+    )
     .eq("user_id", user.id)
     .eq("list_type", listType)
     .order("created_at", { ascending: false });
@@ -93,10 +98,13 @@ export async function POST(request: Request) {
         artist: body.artist,
         cover_image: body.coverImage ?? null,
         year: body.year ?? null,
+        genre: body.genre ?? null,
       },
       { onConflict: "user_id,list_type,discogs_id" }
     )
-    .select("id, discogs_id, list_type, album_title, artist, cover_image, year")
+    .select(
+      "id, discogs_id, list_type, album_title, artist, cover_image, year, genre"
+    )
     .single();
 
   if (error) {

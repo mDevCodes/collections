@@ -10,6 +10,8 @@ import {
 
 export default function SearchResult({ searchValue }: { searchValue: string }) {
   const { user } = useUser();
+  const query = searchValue.trim();
+
   const { data, error, isFetching, fetchNextPage, hasNextPage } =
     useInfiniteQuery({
       queryKey: ["search", searchValue],
@@ -30,6 +32,7 @@ export default function SearchResult({ searchValue }: { searchValue: string }) {
         }
         return undefined;
       },
+      enabled: query !== "",
     });
 
   const { data: collectionItems } = useCollectionItems("collection");
@@ -42,38 +45,56 @@ export default function SearchResult({ searchValue }: { searchValue: string }) {
   const collectionIds = new Set(collectionItems?.map((item) => item.discogsId));
   const wishlistIds = new Set(wishlistItems?.map((item) => item.discogsId));
 
+  if (query === "") {
+    return (
+      <div className="px-5 py-[60px] text-center text-muted">
+        <p className="mb-[6px] text-[16px]">
+          Start typing to search millions of records.
+        </p>
+        <p className="text-[14px]">
+          Try &ldquo;Miles Davis&rdquo;, &ldquo;Rumours&rdquo;, or &ldquo;Daft
+          Punk&rdquo;.
+        </p>
+      </div>
+    );
+  }
+
   if (error) {
-    return <h3>Error</h3>;
+    return <h3 className="text-center text-text">Error</h3>;
+  }
+
+  const hasResults = (data?.pages[0]?.data.length ?? 0) > 0;
+
+  if (!isFetching && !hasResults) {
+    return (
+      <div className="px-5 py-[60px] text-center text-muted">
+        <p className="text-[16px]">No results found.</p>
+      </div>
+    );
   }
 
   return (
-    <>
-      {data?.pages[0].data.length !== 0 ? (
-        data?.pages.map((page) =>
-          page.data.map((album: Album) => (
-            <Result
-              key={album.id}
-              album={album}
-              isSignedIn={!!user}
-              isInCollection={collectionIds.has(album.id)}
-              isInWishlist={wishlistIds.has(album.id)}
-              onToggleCollection={() =>
-                collectionIds.has(album.id)
-                  ? removeFromCollection.mutate(album.id)
-                  : addToCollection.mutate(album)
-              }
-              onToggleWishlist={() =>
-                wishlistIds.has(album.id)
-                  ? removeFromWishlist.mutate(album.id)
-                  : addToWishlist.mutate(album)
-              }
-            />
-          ))
-        )
-      ) : (
-        <div className="flex justify-center">
-          <p>No results found</p>
-        </div>
+    <div className="flex flex-col">
+      {data?.pages.map((page) =>
+        page.data.map((album: Album) => (
+          <Result
+            key={album.id}
+            album={album}
+            isSignedIn={!!user}
+            isInCollection={collectionIds.has(album.id)}
+            isInWishlist={wishlistIds.has(album.id)}
+            onToggleCollection={() =>
+              collectionIds.has(album.id)
+                ? removeFromCollection.mutate(album.id)
+                : addToCollection.mutate(album)
+            }
+            onToggleWishlist={() =>
+              wishlistIds.has(album.id)
+                ? removeFromWishlist.mutate(album.id)
+                : addToWishlist.mutate(album)
+            }
+          />
+        ))
       )}
       {isFetching
         ? Array(10)
@@ -82,12 +103,12 @@ export default function SearchResult({ searchValue }: { searchValue: string }) {
         : null}
       {!isFetching && hasNextPage ? (
         <button
-          className="border-2 border-gray-800 rounded-xl p-3 mb-4"
+          className="mb-4 mt-6 self-center rounded-full border border-pill-border px-6 py-[11px] font-display text-[14px] font-semibold text-text"
           onClick={() => fetchNextPage()}
         >
           More Results
         </button>
       ) : null}
-    </>
+    </div>
   );
 }

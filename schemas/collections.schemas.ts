@@ -15,6 +15,7 @@ const AlbumSchema = z.object({
   albumTitle: z.string().nonempty(),
   artist: z.string(),
   year: z.string().optional(),
+  genre: z.string().optional(),
   formats: FormatsSchema,
 });
 
@@ -37,6 +38,7 @@ const CollectionItemSchema = z.object({
   artist: z.string(),
   coverImage: z.string().nullable(),
   year: z.string().nullable(),
+  genre: z.string().nullable(),
 });
 
 export type ListType = z.infer<typeof ListTypeSchema>;

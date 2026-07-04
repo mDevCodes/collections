@@ -1,13 +1,46 @@
 "use client";
 
-import Image from "next/image";
+import { useMemo, useState } from "react";
+import Link from "next/link";
+import clsx from "clsx";
 import Icon from "./Icon";
+import Cover from "./Cover";
 import useUser from "@/lib/supabase/useUser";
 import {
   useCollectionItems,
   useToggleCollectionItem,
 } from "@/lib/hooks/useCollectionItems";
-import { ListType } from "@/schemas/collections.schemas";
+import { CollectionItem, ListType } from "@/schemas/collections.schemas";
+
+type View = "grid" | "list";
+type Sort = "recent" | "artist" | "year";
+
+function SegmentButton({
+  active,
+  onClick,
+  icon,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  icon: "grid" | "list";
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={clsx(
+        "flex items-center gap-[6px] rounded-[7px] px-[13px] py-[7px] font-display text-[13px]",
+        active
+          ? "bg-toggle-active font-semibold text-text shadow-toggle-active"
+          : "bg-transparent font-medium text-muted"
+      )}
+    >
+      <Icon type={icon} size="xsmall" />
+      {children}
+    </button>
+  );
+}
 
 export default function CollectionList({
   listType,
@@ -17,72 +50,244 @@ export default function CollectionList({
   title: string;
 }) {
   const { user, isLoading: isUserLoading } = useUser();
-  const { data: items, isLoading } = useCollectionItems(listType);
+  const { data, isLoading } = useCollectionItems(listType);
   const { remove } = useToggleCollectionItem(listType);
 
-  if (isUserLoading) {
+  const [view, setView] = useState<View>("grid");
+  const [genre, setGenre] = useState("All");
+  const [sort, setSort] = useState<Sort>("recent");
+
+  const allItems = useMemo(() => data ?? [], [data]);
+
+  const genres = useMemo(
+    () => [
+      "All",
+      ...Array.from(new Set(allItems.map((a) => a.genre).filter((g): g is string => Boolean(g)))),
+    ],
+    [allItems]
+  );
+
+  const items = useMemo(() => {
+    let list =
+      genre === "All" ? allItems : allItems.filter((a) => a.genre === genre);
+    list = [...list];
+    if (sort === "artist") {
+      list.sort((x, y) => x.artist.localeCompare(y.artist));
+    } else if (sort === "year") {
+      list.sort((x, y) => Number(y.year ?? 0) - Number(x.year ?? 0));
+    }
+    return list;
+  }, [allItems, genre, sort]);
+
+  const years = items.map((a) => Number(a.year)).filter((y) => !Number.isNaN(y));
+  const genreCount = new Set(items.map((a) => a.genre).filter(Boolean)).size;
+  const stats = items.length
+    ? `${items.length} record${items.length !== 1 ? "s" : ""} · ${genreCount} genre${
+        genreCount !== 1 ? "s" : ""
+      } · ${Math.min(...years)}–${Math.max(...years)}`
+    : "No records yet";
+
+  if (isUserLoading || isLoading) {
     return null;
   }
 
   if (!user) {
     return (
-      <p className="mt-10">
-        <a href="/login" className="underline">
-          Sign in
-        </a>{" "}
-        to see your {title.toLowerCase()}.
-      </p>
+      <main className="mx-auto max-w-[1160px] px-[18px] pt-6 dt:px-8 dt:pt-10">
+        <p className="text-[15px] text-text">
+          <Link href="/login" className="font-semibold text-accent underline">
+            Sign in
+          </Link>{" "}
+          to see your {listType === "collection" ? "collection" : "wishlist"}.
+        </p>
+      </main>
     );
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-4">
-      <h1 className="text-3xl font-heading mt-10 mb-6">{title}</h1>
-
-      {isLoading ? <p>Loading...</p> : null}
-
-      {!isLoading && items?.length === 0 ? (
-        <p className="text-gray-400">Nothing here yet — save an album from search to add it.</p>
-      ) : null}
-
-      {items?.map((item) => (
-        <div
-          key={item.id}
-          className="flex w-full gap-6 mb-5 pb-5 border-b border-solid border-gray-800"
-        >
-          <div className="relative w-24 h-24 shrink-0 overflow-hidden">
-            {item.coverImage ? (
-              <Image
-                className="rounded-sm object-cover w-full"
-                src={item.coverImage}
-                alt={`${item.albumTitle} cover image`}
-                fill
-              />
-            ) : (
-              <Icon
-                className="w-full h-full text-white bg-gray-800 p-7"
-                type="no-img"
-                size="medium"
-              />
-            )}
-          </div>
-
-          <div className="flex grow justify-between gap-3 items-center">
-            <div className="text-sm">
-              <p className="font-bold">{item.albumTitle}</p>
-              <p>{item.artist}</p>
-              <p className="text-gray-400">{item.year ?? "-"}</p>
-            </div>
-
-            <button
-              onClick={() => remove.mutate(item.discogsId)}
-              className="text-xs border-2 border-gray-800 rounded-xl px-2 py-1 shrink-0"
-            >
-              Remove
-            </button>
-          </div>
+    <main className="mx-auto max-w-[1160px] px-[18px] pb-24 pt-6 dt:px-8 dt:pb-20 dt:pt-10">
+      <div className="mb-[26px] flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="mb-2 font-display text-[clamp(30px,5.5vw,42px)] font-extrabold leading-[1.02] tracking-[-0.03em] text-text">
+            {title}
+          </h1>
+          <p className="text-[15px] text-muted">{stats}</p>
         </div>
-      ))}
+        <div className="flex gap-[6px] rounded-[11px] border border-border bg-toggle-bg p-1">
+          <SegmentButton active={view === "grid"} onClick={() => setView("grid")} icon="grid">
+            Grid
+          </SegmentButton>
+          <SegmentButton active={view === "list"} onClick={() => setView("list")} icon="list">
+            List
+          </SegmentButton>
+        </div>
+      </div>
+
+      {allItems.length === 0 ? (
+        <div className="mt-[10px] rounded-2xl border-[1.5px] border-dashed border-pill-border py-[70px] text-center">
+          <div className="mx-auto mb-[18px] flex h-14 w-14 items-center justify-center rounded-full bg-toggle-bg text-muted">
+            <Icon type="disc" size="medium" />
+          </div>
+          <p className="mb-[6px] font-display text-[18px] font-semibold text-text">
+            {listType === "collection"
+              ? "Your collection is empty"
+              : "Your wishlist is empty"}
+          </p>
+          <p className="mb-[22px] text-[14px] text-muted">
+            {listType === "collection"
+              ? "Records you own will show up here."
+              : "Save records you want for later."}
+          </p>
+          <Link
+            href="/search"
+            className="rounded-full bg-accent px-[22px] py-[11px] font-display text-[14px] font-semibold text-accent-text"
+          >
+            Search for records
+          </Link>
+        </div>
+      ) : (
+        <>
+          <div className="mb-[30px] flex flex-wrap items-center justify-between gap-[14px]">
+            <div className="flex flex-wrap gap-2">
+              {genres.map((g) => (
+                <button
+                  key={g}
+                  onClick={() => setGenre(g)}
+                  className={clsx(
+                    "rounded-full px-[15px] py-2 font-display text-[13px]",
+                    g === genre
+                      ? "border border-accent bg-accent font-semibold text-accent-text"
+                      : "border border-pill-border bg-transparent font-medium text-muted"
+                  )}
+                >
+                  {g}
+                </button>
+              ))}
+            </div>
+            <div className="flex items-center gap-[9px] text-[13px] text-muted">
+              Sort
+              <div className="relative inline-flex items-center">
+                <select
+                  value={sort}
+                  onChange={(e) => setSort(e.target.value as Sort)}
+                  className="appearance-none rounded-full border border-pill-border bg-transparent py-2 pl-4 pr-9 font-display text-[13px] font-medium text-text outline-none"
+                >
+                  <option value="recent">Recently added</option>
+                  <option value="artist">Artist A–Z</option>
+                  <option value="year">Year — newest</option>
+                </select>
+                <span className="pointer-events-none absolute right-[15px] text-[10px] text-muted">
+                  ▼
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {items.length === 0 ? (
+            <p className="text-[14px] text-muted">No records match this filter.</p>
+          ) : view === "grid" ? (
+            <div className="grid grid-cols-2 gap-[22px_14px] dt:grid-cols-[repeat(auto-fill,minmax(190px,1fr))] dt:gap-[28px_24px]">
+              {items.map((item) => (
+                <GridCard
+                  key={item.id}
+                  item={item}
+                  listType={listType}
+                  onRemove={() => remove.mutate(item.discogsId)}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col">
+              {items.map((item) => (
+                <ListRow
+                  key={item.id}
+                  item={item}
+                  onRemove={() => remove.mutate(item.discogsId)}
+                />
+              ))}
+            </div>
+          )}
+        </>
+      )}
+    </main>
+  );
+}
+
+function GridCard({
+  item,
+  listType,
+  onRemove,
+}: {
+  item: CollectionItem;
+  listType: ListType;
+  onRemove: () => void;
+}) {
+  return (
+    <div>
+      <div className="relative mb-[13px] aspect-square overflow-hidden rounded-[8px] shadow-cover">
+        <Cover
+          src={item.coverImage}
+          alt={`${item.albumTitle} cover image`}
+          className="absolute inset-0"
+        />
+        <button
+          onClick={onRemove}
+          title="Remove"
+          className="absolute right-[10px] top-[10px] flex h-[29px] w-[29px] items-center justify-center rounded-full bg-status-bg backdrop-blur-[6px]"
+        >
+          {listType === "collection" ? (
+            <Icon type="check" size="xsmall" className="text-accent" />
+          ) : (
+            <Icon type="heart-filled" size="xsmall" className="text-accent" />
+          )}
+        </button>
+      </div>
+      <p className="mb-[3px] font-display text-[15px] font-semibold leading-[1.25] tracking-[-0.01em] text-text">
+        {item.albumTitle}
+      </p>
+      <p className="mb-2 text-[14px] text-muted">{item.artist}</p>
+      <div className="flex items-center gap-2 text-[12px]">
+        <span className="text-muted-2">{item.year ?? "—"}</span>
+        {item.genre ? (
+          <>
+            <span className="text-faint">·</span>
+            <span className="text-muted-2">{item.genre}</span>
+          </>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+function ListRow({
+  item,
+  onRemove,
+}: {
+  item: CollectionItem;
+  onRemove: () => void;
+}) {
+  return (
+    <div className="flex items-center gap-4 border-b border-divider py-[14px]">
+      <Cover
+        src={item.coverImage}
+        alt={`${item.albumTitle} cover image`}
+        className="relative h-14 w-14 shrink-0 overflow-hidden rounded-[5px]"
+      />
+      <div className="min-w-0 flex-grow">
+        <p className="mb-[2px] truncate font-display text-[15px] font-semibold tracking-[-0.01em] text-text">
+          {item.albumTitle}
+        </p>
+        <p className="text-[13px] text-muted">
+          {item.artist} · {item.year ?? "—"}
+          {item.genre ? ` · ${item.genre}` : ""}
+        </p>
+      </div>
+      <button
+        onClick={onRemove}
+        className="shrink-0 rounded-full border border-pill-border px-4 py-2 font-display text-[13px] font-semibold text-muted"
+      >
+        Remove
+      </button>
     </div>
   );
 }

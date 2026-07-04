@@ -37,6 +37,7 @@ const discogs = {
             albumTitle: splitTitle(album.title).album,
             artist: splitTitle(album.title).artist,
             year: album.year,
+            genre: album.genre?.[0],
             formats: album.formats,
           };
           return result;

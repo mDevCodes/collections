@@ -3,25 +3,63 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  --bg: #f4eddf;
+  --surface: #efe7d6;
+  --text: #2b2117;
+  --muted: #8a7a60;
+  --muted-2: #6e6151;
+  --faint: #cdbfa4;
+  --border: #e2d6bf;
+  --pill-border: #d9cbb0;
+  --accent: #b0562f;
+  --accent-text: #ffffff;
+  --accent-glow: transparent;
+  --toggle-bg: rgba(43, 33, 23, 0.05);
+  --toggle-active: #ffffff;
+  --toggle-active-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --divider: #e6dbc6;
+  --status-bg: rgba(255, 255, 255, 0.92);
+  --field: #ffffff;
+  --field-border: #e2d6bf;
+  --nav-border: #e2d6bf;
+  --cover-shadow: 0 12px 26px -14px rgba(60, 40, 20, 0.55);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+.dark {
+  --bg: #17110a;
+  --surface: #1d160d;
+  --text: #f2e8d6;
+  --muted: #a2937a;
+  --muted-2: #cbbfa8;
+  --faint: #4a3f2e;
+  --border: rgba(255, 255, 255, 0.09);
+  --pill-border: rgba(255, 255, 255, 0.13);
+  --accent: #d99a4a;
+  --accent-text: #231607;
+  --accent-glow: #d99a4a;
+  --toggle-bg: rgba(255, 255, 255, 0.05);
+  --toggle-active: rgba(255, 255, 255, 0.1);
+  --toggle-active-shadow: none;
+  --divider: rgba(255, 255, 255, 0.08);
+  --status-bg: rgba(23, 17, 10, 0.72);
+  --field: rgba(255, 255, 255, 0.06);
+  --field-border: rgba(255, 255, 255, 0.12);
+  --nav-border: rgba(255, 255, 255, 0.07);
+  --cover-shadow: 0 12px 30px -12px rgba(0, 0, 0, 0.8);
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--muted);
+  opacity: 0.85;
+}
+
+select {
+  font-family: var(--font-display), sans-serif;
 }
