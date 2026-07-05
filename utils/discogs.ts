@@ -4,10 +4,14 @@ import splitTitle from "./splitTitle";
 import { SearchResponseSchema } from "@/schemas/collections.schemas";
 
 const discogs = {
-  search: async (query: {
-    search: string;
-    page: string;
-  }): Promise<z.infer<typeof SearchResponseSchema>> => {
+  search: async (
+    query: {
+      search: string;
+      page: string;
+      perPage?: string;
+    },
+    options?: { revalidateSeconds?: number }
+  ): Promise<z.infer<typeof SearchResponseSchema>> => {
     // define url for GET API call
     const searchParams = new URLSearchParams({
       q: query.search,
@@ -15,14 +19,19 @@ const discogs = {
       token: process.env.DISCOGS_API_KEY!,
       country: "US",
       format: "Vinyl",
-      per_page: "10",
+      per_page: query.perPage ?? "10",
       page: String(query.page),
     });
 
     const url = "https://api.discogs.com/database/search?" + searchParams;
 
     // GET call to Discogs API
-    const result = await fetch(url);
+    const result = await fetch(
+      url,
+      options?.revalidateSeconds !== undefined
+        ? { next: { revalidate: options.revalidateSeconds } }
+        : undefined
+    );
     const data = await result.json();
 
     const narrowedData = DiscogsSearchResponseSchema.parse(data);
@@ -38,6 +47,7 @@ const discogs = {
             artist: splitTitle(album.title).artist,
             year: album.year,
             genre: album.genre?.[0],
+            collectors: album.community?.have,
             formats: album.formats,
           };
           return result;

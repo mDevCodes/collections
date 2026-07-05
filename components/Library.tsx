@@ -15,7 +15,44 @@ import { CollectionItem, ListType } from "@/schemas/collections.schemas";
 type View = "grid" | "list";
 type Sort = "recent" | "artist" | "year";
 
-function SegmentButton({
+function TabButton({
+  active,
+  onClick,
+  icon,
+  count,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  icon: "grid" | "heart";
+  count: number;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={clsx(
+        "flex items-center gap-2 rounded-[8px] px-4 py-[9px] font-display text-[13px]",
+        active
+          ? "bg-toggle-active font-semibold text-text shadow-toggle-active"
+          : "bg-transparent font-medium text-muted"
+      )}
+    >
+      <Icon type={icon} size="xsmall" />
+      {children}
+      <span
+        className={clsx(
+          "rounded-full px-[7px] py-px text-[11px]",
+          active ? "bg-bg text-muted" : "bg-toggle-bg text-muted"
+        )}
+      >
+        {count}
+      </span>
+    </button>
+  );
+}
+
+function ViewSegmentButton({
   active,
   onClick,
   icon,
@@ -42,34 +79,44 @@ function SegmentButton({
   );
 }
 
-export default function CollectionList({
-  listType,
-  title,
-}: {
-  listType: ListType;
-  title: string;
-}) {
+export default function Library() {
   const { user, isLoading: isUserLoading } = useUser();
-  const { data, isLoading } = useCollectionItems(listType);
-  const { remove } = useToggleCollectionItem(listType);
+  const [libTab, setLibTab] = useState<ListType>("collection");
+  const { data: collectionData, isLoading: isCollectionLoading } =
+    useCollectionItems("collection");
+  const { data: wishlistData, isLoading: isWishlistLoading } =
+    useCollectionItems("wishlist");
+  const { remove } = useToggleCollectionItem(libTab);
 
   const [view, setView] = useState<View>("grid");
   const [genre, setGenre] = useState("All");
   const [sort, setSort] = useState<Sort>("recent");
 
-  const allItems = useMemo(() => data ?? [], [data]);
+  const collectionCount = collectionData?.length ?? 0;
+  const wishlistCount = wishlistData?.length ?? 0;
+
+  const allItems = useMemo(
+    () => (libTab === "collection" ? collectionData : wishlistData) ?? [],
+    [libTab, collectionData, wishlistData]
+  );
+
+  const switchTab = (tab: ListType) => {
+    setLibTab(tab);
+    setGenre("All");
+  };
 
   const genres = useMemo(
     () => [
       "All",
-      ...Array.from(new Set(allItems.map((a) => a.genre).filter((g): g is string => Boolean(g)))),
+      ...Array.from(
+        new Set(allItems.map((a) => a.genre).filter((g): g is string => Boolean(g)))
+      ),
     ],
     [allItems]
   );
 
   const items = useMemo(() => {
-    let list =
-      genre === "All" ? allItems : allItems.filter((a) => a.genre === genre);
+    let list = genre === "All" ? allItems : allItems.filter((a) => a.genre === genre);
     list = [...list];
     if (sort === "artist") {
       list.sort((x, y) => x.artist.localeCompare(y.artist));
@@ -87,6 +134,8 @@ export default function CollectionList({
       } · ${Math.min(...years)}–${Math.max(...years)}`
     : "No records yet";
 
+  const isLoading = isCollectionLoading || isWishlistLoading;
+
   if (isUserLoading || isLoading) {
     return null;
   }
@@ -98,7 +147,7 @@ export default function CollectionList({
           <Link href="/login" className="font-semibold text-accent underline">
             Sign in
           </Link>{" "}
-          to see your {listType === "collection" ? "collection" : "wishlist"}.
+          to see your library.
         </p>
       </main>
     );
@@ -106,20 +155,41 @@ export default function CollectionList({
 
   return (
     <main className="mx-auto max-w-[1160px] px-[18px] pb-24 pt-6 dt:px-8 dt:pb-20 dt:pt-10">
-      <div className="mb-[26px] flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="mb-2 font-display text-[clamp(30px,5.5vw,42px)] font-extrabold leading-[1.02] tracking-[-0.03em] text-text">
-            {title}
-          </h1>
-          <p className="text-[15px] text-muted">{stats}</p>
-        </div>
+      <h1 className="mb-2 font-display text-[clamp(30px,5.5vw,42px)] font-extrabold leading-[1.02] tracking-[-0.03em] text-text">
+        Library
+      </h1>
+      <p className="mb-[22px] text-[15px] text-muted">
+        Everything you own and everything you want, in one place.
+      </p>
+
+      <div className="mb-[26px] inline-flex gap-[6px] rounded-[12px] border border-border bg-toggle-bg p-[5px]">
+        <TabButton
+          active={libTab === "collection"}
+          onClick={() => switchTab("collection")}
+          icon="grid"
+          count={collectionCount}
+        >
+          Collection
+        </TabButton>
+        <TabButton
+          active={libTab === "wishlist"}
+          onClick={() => switchTab("wishlist")}
+          icon="heart"
+          count={wishlistCount}
+        >
+          Wishlist
+        </TabButton>
+      </div>
+
+      <div className="mb-[22px] flex flex-wrap items-center justify-between gap-4">
+        <p className="text-[14px] text-muted">{stats}</p>
         <div className="flex gap-[6px] rounded-[11px] border border-border bg-toggle-bg p-1">
-          <SegmentButton active={view === "grid"} onClick={() => setView("grid")} icon="grid">
+          <ViewSegmentButton active={view === "grid"} onClick={() => setView("grid")} icon="grid">
             Grid
-          </SegmentButton>
-          <SegmentButton active={view === "list"} onClick={() => setView("list")} icon="list">
+          </ViewSegmentButton>
+          <ViewSegmentButton active={view === "list"} onClick={() => setView("list")} icon="list">
             List
-          </SegmentButton>
+          </ViewSegmentButton>
         </div>
       </div>
 
@@ -129,12 +199,12 @@ export default function CollectionList({
             <Icon type="disc" size="medium" />
           </div>
           <p className="mb-[6px] font-display text-[18px] font-semibold text-text">
-            {listType === "collection"
+            {libTab === "collection"
               ? "Your collection is empty"
               : "Your wishlist is empty"}
           </p>
           <p className="mb-[22px] text-[14px] text-muted">
-            {listType === "collection"
+            {libTab === "collection"
               ? "Records you own will show up here."
               : "Save records you want for later."}
           </p>
@@ -191,7 +261,7 @@ export default function CollectionList({
                 <GridCard
                   key={item.id}
                   item={item}
-                  listType={listType}
+                  listType={libTab}
                   onRemove={() => remove.mutate(item.discogsId)}
                 />
               ))}

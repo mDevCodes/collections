@@ -22,6 +22,7 @@ module.exports = {
       },
       colors: {
         bg: "var(--bg)",
+        "bg-translucent": "var(--bg-translucent)",
         surface: "var(--surface)",
         text: "var(--text)",
         muted: "var(--muted)",

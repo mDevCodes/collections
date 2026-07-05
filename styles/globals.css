@@ -4,6 +4,7 @@
 
 :root {
   --bg: #f4eddf;
+  --bg-translucent: rgba(244, 237, 223, 0.8);
   --surface: #efe7d6;
   --text: #2b2117;
   --muted: #8a7a60;
@@ -27,6 +28,7 @@
 
 .dark {
   --bg: #17110a;
+  --bg-translucent: rgba(23, 17, 10, 0.8);
   --surface: #1d160d;
   --text: #f2e8d6;
   --muted: #a2937a;
@@ -62,4 +64,32 @@ textarea::placeholder {
 
 select {
   font-family: var(--font-display), sans-serif;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marquee-rev {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes av-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
 }

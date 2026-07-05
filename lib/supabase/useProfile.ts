@@ -4,7 +4,13 @@ import { useEffect, useState } from "react";
 import { createClient } from "./client";
 import useUser from "./useUser";
 
-export type Profile = { username: string; shareSlug: string };
+export type Profile = {
+  username: string;
+  shareSlug: string;
+  displayName: string | null;
+  avatarVariant: number | null;
+  genres: string[] | null;
+};
 
 export default function useProfile() {
   const { user } = useUser();
@@ -22,12 +28,20 @@ export default function useProfile() {
     const supabase = createClient();
     supabase
       .from("profiles")
-      .select("username, share_slug")
+      .select("username, share_slug, display_name, avatar_variant, genres")
       .eq("id", user.id)
       .single()
       .then(({ data }) => {
         setProfile(
-          data ? { username: data.username, shareSlug: data.share_slug } : null
+          data
+            ? {
+                username: data.username,
+                shareSlug: data.share_slug,
+                displayName: data.display_name,
+                avatarVariant: data.avatar_variant,
+                genres: data.genres,
+              }
+            : null
         );
         setIsLoading(false);
       });

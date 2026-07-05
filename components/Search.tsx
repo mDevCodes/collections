@@ -4,9 +4,9 @@ import { useDebounce } from "react-use";
 import SearchBar from "./SearchBar";
 import SearchResult from "./SearchResult";
 
-export default function Search() {
-  const [clientSearchValue, setClientSearchValue] = useState<string>("");
-  const [serverSearchValue, setServerSearchValue] = useState<string>("");
+export default function Search({ initialQuery = "" }: { initialQuery?: string }) {
+  const [clientSearchValue, setClientSearchValue] = useState<string>(initialQuery);
+  const [serverSearchValue, setServerSearchValue] = useState<string>(initialQuery);
 
   const [, _] = useDebounce(
     () => {
