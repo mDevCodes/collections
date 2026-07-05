@@ -9,6 +9,7 @@ export type Profile = {
   shareSlug: string;
   displayName: string | null;
   avatarVariant: number | null;
+  avatarUrl: string | null;
   genres: string[] | null;
 };
 
@@ -28,7 +29,7 @@ export default function useProfile() {
     const supabase = createClient();
     supabase
       .from("profiles")
-      .select("username, share_slug, display_name, avatar_variant, genres")
+      .select("username, share_slug, display_name, avatar_variant, avatar_url, genres")
       .eq("id", user.id)
       .single()
       .then(({ data }) => {
@@ -39,6 +40,7 @@ export default function useProfile() {
                 shareSlug: data.share_slug,
                 displayName: data.display_name,
                 avatarVariant: data.avatar_variant,
+                avatarUrl: data.avatar_url,
                 genres: data.genres,
               }
             : null

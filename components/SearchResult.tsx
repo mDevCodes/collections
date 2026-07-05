@@ -1,5 +1,8 @@
+import { useState } from "react";
+import Link from "next/link";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import Result from "./Result";
+import Icon from "./Icon";
 import { Album, SearchResponseSchema } from "@/schemas/collections.schemas";
 import ResultLoading from "./ResultLoading";
 import useUser from "@/lib/supabase/useUser";
@@ -8,8 +11,29 @@ import {
   useToggleCollectionItem,
 } from "@/lib/hooks/useCollectionItems";
 
+function RegisterBanner({ onDismiss }: { onDismiss: () => void }) {
+  return (
+    <div className="mb-4 flex items-center justify-between gap-3 rounded-[12px] border border-pill-border bg-surface px-4 py-3">
+      <p className="text-[13px] font-medium text-text">
+        <Link href="/register" className="font-semibold text-accent underline">
+          Create a free account
+        </Link>{" "}
+        to save records you find here to your collection or wishlist.
+      </p>
+      <button
+        onClick={onDismiss}
+        aria-label="Dismiss"
+        className="shrink-0 text-muted"
+      >
+        <Icon type="clear" size="xsmall" />
+      </button>
+    </div>
+  );
+}
+
 export default function SearchResult({ searchValue }: { searchValue: string }) {
   const { user } = useUser();
+  const [bannerDismissed, setBannerDismissed] = useState(false);
   const query = searchValue.trim();
 
   const { data, error, isFetching, fetchNextPage, hasNextPage } =
@@ -85,6 +109,9 @@ export default function SearchResult({ searchValue }: { searchValue: string }) {
 
   return (
     <div className="flex flex-col">
+      {!user && hasResults && !bannerDismissed ? (
+        <RegisterBanner onDismiss={() => setBannerDismissed(true)} />
+      ) : null}
       {data?.pages.map((page) =>
         page.data.map((album: Album) => (
           <Result

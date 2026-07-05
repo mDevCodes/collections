@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import clsx from "clsx";
 import { createClient } from "@/lib/supabase/client";
@@ -40,6 +40,8 @@ function FieldLabel({ htmlFor, children }: { htmlFor: string; children: React.Re
 const inputClass =
   "w-full rounded-[10px] border border-field-border bg-field px-4 py-[13px] font-body text-[15px] text-text outline-none";
 
+const MAX_AVATAR_BYTES = 5 * 1024 * 1024;
+
 export default function Register() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
@@ -49,12 +51,41 @@ export default function Register() {
   const [username, setUsername] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [avatarVariant, setAvatarVariant] = useState(0);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [avatarError, setAvatarError] = useState<string | null>(null);
   const [genres, setGenres] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (!avatarFile) {
+      setAvatarPreview(null);
+      return;
+    }
+    const url = URL.createObjectURL(avatarFile);
+    setAvatarPreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [avatarFile]);
 
   const toggleGenre = (genre: string) => {
     setGenres((prev) =>
       prev.includes(genre) ? prev.filter((g) => g !== genre) : [...prev, genre]
     );
+  };
+
+  const handleAvatarFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setAvatarError("Please choose an image file.");
+      return;
+    }
+    if (file.size > MAX_AVATAR_BYTES) {
+      setAvatarError("Images must be smaller than 5MB.");
+      return;
+    }
+    setAvatarError(null);
+    setAvatarFile(file);
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -93,6 +124,33 @@ export default function Register() {
       if (signUpError) {
         setError(signUpError.message);
         return;
+      }
+
+      // A binary file can't ride along in signUp's metadata like the other
+      // fields do, so it has to be uploaded after the account exists. That
+      // requires an authenticated session, which we only have immediately
+      // when email confirmation is off -- if confirmation is required, the
+      // photo is skipped here and the user keeps their picked avatar variant.
+      if (data.session && data.user && avatarFile) {
+        try {
+          const ext = avatarFile.name.split(".").pop() || "jpg";
+          const path = `${data.user.id}/avatar.${ext}`;
+          const { error: uploadError } = await supabase.storage
+            .from("avatars")
+            .upload(path, avatarFile, { upsert: true, contentType: avatarFile.type });
+
+          if (!uploadError) {
+            const {
+              data: { publicUrl },
+            } = supabase.storage.from("avatars").getPublicUrl(path);
+            await supabase
+              .from("profiles")
+              .update({ avatar_url: publicUrl })
+              .eq("id", data.user.id);
+          }
+        } catch {
+          // Non-fatal -- registration still succeeds without the photo.
+        }
       }
 
       if (data.session) {
@@ -173,35 +231,72 @@ export default function Register() {
         {/* Avatar */}
         <SectionLabel>Profile picture</SectionLabel>
         <p className="mb-[18px] text-[14px] text-muted">
-          Pick a friendly avatar. Photo uploads are coming soon.
+          Upload a photo, or pick a friendly avatar instead.
         </p>
-        <div className="mb-[34px] flex flex-wrap gap-[14px]">
-          <button
-            type="button"
-            disabled
-            title="Photo uploads are coming soon"
-            className="flex h-16 w-16 cursor-not-allowed flex-col items-center justify-center gap-[3px] rounded-2xl border-2 border-border bg-surface opacity-60"
+        <div className="mb-[16px] flex flex-wrap gap-[14px]">
+          <label
+            className={clsx(
+              "flex h-16 w-16 cursor-pointer flex-col items-center justify-center gap-[3px] overflow-hidden rounded-2xl border-2 bg-surface",
+              avatarPreview ? "border-accent" : "border-border"
+            )}
           >
-            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-accent to-[#d98a4a]">
-              <Icon type="no-img" size="small" className="text-white" />
-            </div>
-            <span className="font-display text-[11px] font-semibold text-muted">Upload</span>
-          </button>
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleAvatarFileChange}
+            />
+            {avatarPreview ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={avatarPreview}
+                alt="Avatar preview"
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <>
+                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-accent to-[#d98a4a]">
+                  <Icon type="no-img" size="small" className="text-white" />
+                </div>
+                <span className="font-display text-[11px] font-semibold text-muted">
+                  Upload
+                </span>
+              </>
+            )}
+          </label>
+          {avatarPreview ? (
+            <button
+              type="button"
+              onClick={() => setAvatarFile(null)}
+              className="flex h-16 w-16 flex-col items-center justify-center gap-1 rounded-2xl border-2 border-dashed border-pill-border text-muted"
+            >
+              <Icon type="clear" size="small" />
+              <span className="font-display text-[11px] font-semibold">Remove</span>
+            </button>
+          ) : null}
           {Array.from({ length: AVATAR_VARIANT_COUNT }, (_, i) => i).map((variant) => (
             <button
               type="button"
               key={variant}
-              onClick={() => setAvatarVariant(variant)}
+              onClick={() => {
+                setAvatarVariant(variant);
+                setAvatarFile(null);
+              }}
               aria-label={`Avatar style ${variant + 1}`}
               className={clsx(
                 "flex h-16 w-16 items-center justify-center rounded-2xl border-2 bg-surface",
-                avatarVariant === variant ? "border-accent" : "border-border"
+                !avatarPreview && avatarVariant === variant ? "border-accent" : "border-border"
               )}
             >
               <Avatar variant={variant} size={52} />
             </button>
           ))}
         </div>
+        {avatarError ? (
+          <p className="mb-[18px] text-[13px] text-accent">{avatarError}</p>
+        ) : (
+          <div className="mb-[18px]" />
+        )}
 
         {/* Taste */}
         <SectionLabel>Your taste</SectionLabel>
