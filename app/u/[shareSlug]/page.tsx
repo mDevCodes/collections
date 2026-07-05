@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Cover from "@/components/Cover";
+import Avatar from "@/components/Avatar";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
@@ -51,13 +52,15 @@ export default async function SharedCollectionPage({
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("id, username")
+    .select("id, username, display_name, avatar_variant")
     .eq("share_slug", params.shareSlug)
     .single();
 
   if (!profile) {
     notFound();
   }
+
+  const name = profile.display_name ?? profile.username;
 
   const { data: items } = await supabase
     .from("collection_items")
@@ -80,10 +83,14 @@ export default async function SharedCollectionPage({
       </Link>
 
       <div className="mb-10 flex items-center gap-4">
-        <div className="h-12 w-12 shrink-0 rounded-full bg-gradient-to-br from-accent to-[#d98a4a]" />
+        {profile.avatar_variant !== null && profile.avatar_variant !== undefined ? (
+          <Avatar variant={profile.avatar_variant} size={48} animate={false} />
+        ) : (
+          <div className="h-12 w-12 shrink-0 rounded-full bg-gradient-to-br from-accent to-[#d98a4a]" />
+        )}
         <div>
           <h1 className="mb-1 font-display text-[clamp(26px,6vw,34px)] font-extrabold leading-[1.05] tracking-[-0.03em] text-text">
-            {profile.username}&apos;s Collection
+            {name}&apos;s Collection
           </h1>
           <p className="text-[15px] text-muted">A public collection on Collections</p>
         </div>

@@ -135,6 +135,7 @@ function mapAlbum(album: DiscogsResult & Partial<MasterDetails>) {
     artist: splitTitle(album.title).artist,
     year: album.year,
     genre: album.genre?.[0],
+    collectors: album.community?.have,
     formats: album.formats,
   };
 }
@@ -272,6 +273,48 @@ const discogs = {
       data: matches.map(mapAlbum),
       currentPage: titleData.pagination.page,
       isLastPage: titleData.pagination.page === titleData.pagination.pages,
+    };
+  },
+
+  // A direct, single-request lookup used by the discovery feed (curated
+  // iconic albums + genre pools). The discography-matching `search` above
+  // deliberately fans out into several requests per query, which is overkill
+  // (and expensive multiplied across ~30 seed albums) when all we want is
+  // "the single best-matching vinyl release for this title" - not a full
+  // artist discography. Supports an optional Next.js fetch cache window
+  // since discovery content only needs to refresh periodically.
+  simpleSearch: async (
+    query: {
+      search: string;
+      page: string;
+      perPage?: string;
+    },
+    options?: { revalidateSeconds?: number }
+  ): Promise<z.infer<typeof SearchResponseSchema>> => {
+    const searchParams = new URLSearchParams({
+      q: query.search,
+      type: "release",
+      token: process.env.DISCOGS_API_KEY!,
+      country: "US",
+      format: "Vinyl",
+      per_page: query.perPage ?? "10",
+      page: String(query.page),
+    });
+
+    const url = "https://api.discogs.com/database/search?" + searchParams;
+    const result = await fetch(
+      url,
+      options?.revalidateSeconds !== undefined
+        ? { next: { revalidate: options.revalidateSeconds } }
+        : undefined
+    );
+    const data = await result.json();
+    const narrowedData = DiscogsSearchResponseSchema.parse(data);
+
+    return {
+      data: narrowedData.results.filter((album) => Boolean(album.title)).map(mapAlbum),
+      currentPage: narrowedData.pagination.page,
+      isLastPage: narrowedData.pagination.page === narrowedData.pagination.pages,
     };
   },
 };

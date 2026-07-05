@@ -1,6 +1,7 @@
 import "@/styles/globals.css";
 import type { Metadata } from "next";
 import NavBar from "../components/NavBar";
+import SiteFooter from "../components/SiteFooter";
 import Providers from "../components/Providers";
 import { Schibsted_Grotesk, Space_Grotesk } from "next/font/google";
 
@@ -45,6 +46,7 @@ export default async function RootLayout({
         <Providers>
           <NavBar />
           {children}
+          <SiteFooter />
         </Providers>
       </body>
     </html>

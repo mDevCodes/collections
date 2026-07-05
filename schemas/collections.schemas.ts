@@ -16,6 +16,7 @@ const AlbumSchema = z.object({
   artist: z.string(),
   year: z.string().optional(),
   genre: z.string().optional(),
+  collectors: z.number().optional(),
   formats: FormatsSchema,
 });
 

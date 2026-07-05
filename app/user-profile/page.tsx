@@ -4,9 +4,11 @@ import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import clsx from "clsx";
 import useUser from "@/lib/supabase/useUser";
+import useProfile from "@/lib/supabase/useProfile";
 import { createClient } from "@/lib/supabase/client";
 import { useCollectionItems } from "@/lib/hooks/useCollectionItems";
 import { useTheme } from "@/lib/theme/ThemeProvider";
+import Avatar from "@/components/Avatar";
 
 function SegmentButton({
   active,
@@ -35,11 +37,11 @@ function SegmentButton({
 export default function UserProfile() {
   const router = useRouter();
   const { user, isLoading: isUserLoading } = useUser();
+  const { profile, isLoading: isProfileLoading } = useProfile();
   const { theme, setTheme } = useTheme();
   const { data: collection } = useCollectionItems("collection");
   const { data: wishlist } = useCollectionItems("wishlist");
-  const [username, setUsername] = useState("");
-  const [shareSlug, setShareSlug] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -51,20 +53,10 @@ export default function UserProfile() {
   }, [isUserLoading, user, router]);
 
   useEffect(() => {
-    if (!user) return;
-    const supabase = createClient();
-    supabase
-      .from("profiles")
-      .select("username, share_slug")
-      .eq("id", user.id)
-      .single()
-      .then(({ data }) => {
-        if (data) {
-          setUsername(data.username);
-          setShareSlug(data.share_slug);
-        }
-      });
-  }, [user]);
+    if (profile) {
+      setDisplayName(profile.displayName ?? profile.username);
+    }
+  }, [profile]);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -74,7 +66,7 @@ export default function UserProfile() {
     const supabase = createClient();
     const { error } = await supabase
       .from("profiles")
-      .update({ username })
+      .update({ display_name: displayName })
       .eq("id", user!.id);
 
     setIsSaving(false);
@@ -86,8 +78,8 @@ export default function UserProfile() {
   ).size;
 
   const shareUrl =
-    typeof window !== "undefined" && shareSlug
-      ? `${window.location.origin}/u/${shareSlug}`
+    typeof window !== "undefined" && profile?.shareSlug
+      ? `${window.location.origin}/u/${profile.shareSlug}`
       : "";
 
   const stats = [
@@ -96,17 +88,21 @@ export default function UserProfile() {
     { value: genreCount, label: "Genres" },
   ];
 
-  if (isUserLoading || !user) {
+  if (isUserLoading || isProfileLoading || !user) {
     return null;
   }
 
   return (
     <main className="mx-auto max-w-[560px] px-[18px] pb-24 pt-6 dt:px-8 dt:pb-20 dt:pt-10">
       <div className="mb-7 flex items-center gap-[18px]">
-        <div className="h-[66px] w-[66px] shrink-0 rounded-full bg-gradient-to-br from-accent to-[#d98a4a]" />
+        {profile?.avatarVariant !== null && profile?.avatarVariant !== undefined ? (
+          <Avatar variant={profile.avatarVariant} size={66} />
+        ) : (
+          <div className="h-[66px] w-[66px] shrink-0 rounded-full bg-gradient-to-br from-accent to-[#d98a4a]" />
+        )}
         <div className="min-w-0">
           <h1 className="mb-[3px] font-display text-[clamp(26px,6vw,34px)] font-extrabold leading-[1.05] tracking-[-0.03em] text-text">
-            {username || "…"}
+            {profile?.displayName ?? profile?.username ?? "…"}
           </h1>
           <p className="truncate text-[14px] text-muted">{shareUrl}</p>
         </div>
@@ -125,16 +121,16 @@ export default function UserProfile() {
 
       <form onSubmit={handleSubmit}>
         <label
-          htmlFor="username"
+          htmlFor="displayName"
           className="mb-2 block font-display text-[14px] font-semibold text-text"
         >
           Display name
         </label>
         <input
-          id="username"
-          value={username}
+          id="displayName"
+          value={displayName}
           onChange={(e) => {
-            setUsername(e.target.value);
+            setDisplayName(e.target.value);
             setSaved(false);
           }}
           className="mb-[14px] w-full rounded-[10px] border border-field-border bg-field px-4 py-[13px] font-body text-[15px] text-text outline-none"
@@ -175,7 +171,7 @@ export default function UserProfile() {
           </button>
         </div>
         <a
-          href={`/u/${shareSlug}`}
+          href={`/u/${profile?.shareSlug}`}
           className="mt-[14px] block font-display text-[14px] font-semibold text-accent"
         >
           Preview public page →
