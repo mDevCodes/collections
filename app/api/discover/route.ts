@@ -49,7 +49,7 @@ async function fetchIconicPool(): Promise<Album[]> {
   const pages = await Promise.all(
     ICONIC_ALBUM_SEEDS.map((seed) =>
       discogs
-        .search(
+        .simpleSearch(
           { search: seed, page: "1", perPage: "1" },
           { revalidateSeconds: REVALIDATE_SECONDS }
         )
@@ -74,7 +74,7 @@ async function fetchGenrePool(genres: string[]): Promise<Album[]> {
   const pages = await Promise.all(
     genres.map((genre) =>
       discogs
-        .search(
+        .simpleSearch(
           { search: genre, page: "1", perPage: "20" },
           { revalidateSeconds: REVALIDATE_SECONDS }
         )
