@@ -92,7 +92,7 @@ export default async function SharedCollectionPage({
           <h1 className="mb-1 font-display text-[clamp(26px,6vw,34px)] font-extrabold leading-[1.05] tracking-[-0.03em] text-text">
             {name}&apos;s Collection
           </h1>
-          <p className="text-[15px] text-muted">A public collection on Collections</p>
+          <p className="text-[15px] text-muted">A public collection on Record Collections</p>
         </div>
       </div>
 

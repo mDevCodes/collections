@@ -17,7 +17,7 @@ const body = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Collections App",
+  title: "Record Collections App",
   description: "Collect your favorite records and albums",
 };
 

@@ -18,7 +18,7 @@ export default function SiteFooter() {
       <div className="mx-auto flex max-w-[1160px] flex-wrap items-center justify-between gap-x-7 gap-y-4 px-[18px] py-5 dt:px-8">
         <div className="flex flex-wrap items-center gap-5">
           <span className="font-display text-[14px] font-bold tracking-[-0.01em] text-[#9aa3b8]">
-            Collections
+            Record Collections
           </span>
           <div className="flex flex-wrap gap-[18px]">
             {links.map((label) => (
