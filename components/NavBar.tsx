@@ -36,7 +36,7 @@ function Wordmark({ small = false }: { small?: boolean }) {
           small ? "h-2 w-2" : "h-[9px] w-[9px]"
         )}
       />
-      Collections
+      Record Collections
     </Link>
   );
 }

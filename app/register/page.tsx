@@ -170,7 +170,7 @@ export default function Register() {
   return (
     <main className="mx-auto max-w-[560px] px-[18px] py-[clamp(32px,5vw,52px)] pb-24 dt:px-6">
       <p className="mb-[14px] font-body text-[12px] uppercase tracking-[0.16em] text-accent">
-        Welcome to Collections
+        Welcome to Record Collections
       </p>
       <h1 className="mb-2 font-display text-[clamp(30px,5vw,40px)] font-extrabold leading-[1.05] tracking-[-0.03em] text-text">
         Create your account
