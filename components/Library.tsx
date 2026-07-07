@@ -261,7 +261,6 @@ export default function Library() {
                 <GridCard
                   key={item.id}
                   item={item}
-                  listType={libTab}
                   onRemove={() => remove.mutate(item.discogsId)}
                 />
               ))}
@@ -285,11 +284,9 @@ export default function Library() {
 
 function GridCard({
   item,
-  listType,
   onRemove,
 }: {
   item: CollectionItem;
-  listType: ListType;
   onRemove: () => void;
 }) {
   return (
@@ -303,13 +300,9 @@ function GridCard({
         <button
           onClick={onRemove}
           title="Remove"
-          className="absolute right-[10px] top-[10px] flex h-[29px] w-[29px] items-center justify-center rounded-full bg-status-bg backdrop-blur-[6px]"
+          className="absolute right-[10px] top-[10px] flex h-[29px] w-[29px] items-center justify-center rounded-full bg-status-bg text-muted backdrop-blur-[6px]"
         >
-          {listType === "collection" ? (
-            <Icon type="check" size="xsmall" className="text-accent" />
-          ) : (
-            <Icon type="heart-filled" size="xsmall" className="text-accent" />
-          )}
+          <Icon type="trash" size="xsmall" />
         </button>
       </div>
       <p className="mb-[3px] font-display text-[15px] font-semibold leading-[1.25] tracking-[-0.01em] text-text">

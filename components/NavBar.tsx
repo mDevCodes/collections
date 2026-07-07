@@ -68,7 +68,30 @@ function ThemeToggle({ iconOnly = false }: { iconOnly?: boolean }) {
   );
 }
 
-function NavAvatar({ size, avatarVariant }: { size: number; avatarVariant?: number | null }) {
+function NavAvatar({
+  size,
+  avatarVariant,
+  avatarUrl,
+}: {
+  size: number;
+  avatarVariant?: number | null;
+  avatarUrl?: string | null;
+}) {
+  if (avatarUrl) {
+    // Uploaded photos live in the user's own Supabase project (an
+    // arbitrary, per-deployment hostname), so next/image's remotePatterns
+    // allowlist doesn't apply here -- a plain <img> is simplest.
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={avatarUrl}
+        alt="Your avatar"
+        className="shrink-0 rounded-full object-cover"
+        style={{ width: size, height: size }}
+      />
+    );
+  }
+
   if (avatarVariant !== null && avatarVariant !== undefined) {
     return <Avatar variant={avatarVariant} size={size} animate={false} />;
   }
@@ -209,7 +232,11 @@ export default function NavBar() {
             ))}
             <ThemeToggle />
             <Link href="/user-profile">
-              <NavAvatar size={34} avatarVariant={profile?.avatarVariant} />
+              <NavAvatar
+                size={34}
+                avatarVariant={profile?.avatarVariant}
+                avatarUrl={profile?.avatarUrl}
+              />
             </Link>
           </div>
         </div>
@@ -222,7 +249,11 @@ export default function NavBar() {
           <div className="flex items-center gap-3">
             <ThemeToggle iconOnly />
             <Link href="/user-profile">
-              <NavAvatar size={34} avatarVariant={profile?.avatarVariant} />
+              <NavAvatar
+                size={34}
+                avatarVariant={profile?.avatarVariant}
+                avatarUrl={profile?.avatarUrl}
+              />
             </Link>
           </div>
         </div>

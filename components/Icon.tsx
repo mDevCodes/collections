@@ -15,7 +15,8 @@ type Props = {
     | "moon"
     | "home"
     | "user"
-    | "disc";
+    | "disc"
+    | "trash";
   className?: string;
   size?: "xsmall" | "small" | "medium";
 };
@@ -242,6 +243,24 @@ export default function Icon({ type, className, size = "medium" }: Props) {
       >
         <circle cx="12" cy="12" r="9" />
         <circle cx="12" cy="12" r="2.5" />
+      </svg>
+    );
+  }
+
+  if (type === "trash") {
+    return (
+      <svg
+        className={clsx(sizes[size], className)}
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={1.6}
+        stroke="currentColor"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M4.5 6.75h15m-13 0 .866 12.142A2 2 0 0 0 9.36 20.75h5.28a2 2 0 0 0 1.994-1.858L17.5 6.75m-9 0V4.5a1.5 1.5 0 0 1 1.5-1.5h2a1.5 1.5 0 0 1 1.5 1.5v2.25m-4 4v6m4-6v6"
+        />
       </svg>
     );
   }

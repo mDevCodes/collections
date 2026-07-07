@@ -24,6 +24,25 @@ const STEPS = [
   },
 ];
 
+// The seamless marquee loop (`translateX(-50%)`, see the `marquee` keyframes
+// in styles/globals.css) only looks gapless if a single un-doubled set of
+// covers is already wider than the viewport. The "popular" pool the API
+// returns can come back short (deduped iconic-album lookups often resolve
+// to fewer than 24 unique records), so cycle the available items up to a
+// generous minimum count before doubling -- regardless of how few (or many)
+// items the API handed back, the row always has enough width to loop
+// without a visible gap.
+const MIN_MARQUEE_ITEMS = 24;
+
+function fillMarqueeRow(items: Album[], minCount: number) {
+  if (items.length === 0) return items;
+  const filled: Album[] = [];
+  while (filled.length < minCount) {
+    filled.push(...items);
+  }
+  return filled;
+}
+
 function MarqueeRow({
   items,
   reverse,
@@ -31,7 +50,8 @@ function MarqueeRow({
   items: Album[];
   reverse?: boolean;
 }) {
-  const doubled = [...items, ...items];
+  const filled = fillMarqueeRow(items, MIN_MARQUEE_ITEMS);
+  const doubled = [...filled, ...filled];
   return (
     <div
       className="mb-4 flex w-max gap-4 last:mb-0"
@@ -58,7 +78,7 @@ export default function Landing() {
   const popularPool = data?.popular ?? [];
   const marqueeRow1 = popularPool.slice(0, 12);
   const marqueeRow2Raw = popularPool.slice(12, 24);
-  const marqueeRow2 = marqueeRow2Raw.length >= 4 ? marqueeRow2Raw : [...marqueeRow1].reverse();
+  const marqueeRow2 = marqueeRow2Raw.length > 0 ? marqueeRow2Raw : [...marqueeRow1].reverse();
   const charts = data?.charts ?? [];
 
   return (

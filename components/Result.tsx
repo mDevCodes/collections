@@ -82,12 +82,16 @@ export default function Result({
           />
         </div>
       ) : (
-        <Link
-          href="/login"
-          className="whitespace-nowrap text-[13px] font-medium text-muted underline"
-        >
-          Sign in to save
-        </Link>
+        <p className="whitespace-nowrap text-[13px] font-medium text-muted">
+          <Link href="/register" className="text-accent underline">
+            Register
+          </Link>{" "}
+          or{" "}
+          <Link href="/login" className="underline">
+            log in
+          </Link>{" "}
+          to save
+        </p>
       )}
     </div>
   );
