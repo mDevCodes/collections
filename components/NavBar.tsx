@@ -25,7 +25,7 @@ function Wordmark() {
   return (
     <Link
       href="/"
-      className="flex items-center gap-[9px] font-display text-[19px] font-extrabold leading-[1.1] tracking-[-0.02em] dt:text-[20px] dt:leading-[normal]"
+      className="flex items-center gap-[9px] font-display text-[19px] font-extrabold leading-none tracking-[-0.02em] dt:text-[20px] dt:leading-[normal]"
     >
       <span className="hidden h-[9px] w-[9px] shrink-0 rounded-full bg-accent shadow-[0_0_12px_var(--accent-glow)] dt:block" />
       Record Collections
