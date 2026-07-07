@@ -21,21 +21,13 @@ function isActive(pathname: string, href: string) {
   return pathname.startsWith(href);
 }
 
-function Wordmark({ small = false }: { small?: boolean }) {
+function Wordmark() {
   return (
     <Link
       href="/"
-      className={clsx(
-        "flex items-center font-display font-extrabold tracking-[-0.02em]",
-        small ? "gap-2 text-[19px]" : "gap-[9px] text-[20px]"
-      )}
+      className="flex items-center gap-[9px] font-display text-[19px] font-extrabold leading-[1.1] tracking-[-0.02em] dt:text-[20px] dt:leading-[normal]"
     >
-      <span
-        className={clsx(
-          "rounded-full bg-accent shadow-[0_0_12px_var(--accent-glow)]",
-          small ? "h-2 w-2" : "h-[9px] w-[9px]"
-        )}
-      />
+      <span className="hidden h-[9px] w-[9px] shrink-0 rounded-full bg-accent shadow-[0_0_12px_var(--accent-glow)] dt:block" />
       Record Collections
     </Link>
   );
@@ -245,7 +237,7 @@ export default function NavBar() {
       {/* Mobile top bar */}
       <div className="sticky top-0 z-20 border-b border-nav-border bg-bg dt:hidden">
         <div className="flex items-center justify-between px-[18px] py-4">
-          <Wordmark small />
+          <Wordmark />
           <div className="flex items-center gap-3">
             <ThemeToggle iconOnly />
             <Link href="/user-profile">

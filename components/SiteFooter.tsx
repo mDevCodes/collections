@@ -14,7 +14,7 @@ export default function SiteFooter() {
   if (isLoading || user || pathname !== "/") return null;
 
   return (
-    <footer style={{ background: "#141b2e" }}>
+    <footer className="bg-[#141b2e] dark:bg-surface">
       <div className="mx-auto flex max-w-[1160px] flex-wrap items-center justify-between gap-x-7 gap-y-4 px-[18px] py-5 dt:px-8">
         <div className="flex flex-wrap items-center gap-5">
           <span className="font-display text-[14px] font-bold tracking-[-0.01em] text-[#9aa3b8]">
