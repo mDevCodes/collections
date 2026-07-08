@@ -16,9 +16,26 @@ const body = Space_Grotesk({
   variable: "--font-body",
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+const title = "Record Collections App";
+const description = "Collect your favorite records and albums";
+
 export const metadata: Metadata = {
-  title: "Record Collections App",
-  description: "Collect your favorite records and albums",
+  metadataBase: new URL(siteUrl),
+  title,
+  description,
+  openGraph: {
+    title,
+    description,
+    url: "/",
+    siteName: "Record Collections",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+  },
 };
 
 const noFlashScript = `
