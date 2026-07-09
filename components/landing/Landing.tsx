@@ -149,13 +149,10 @@ export default function Landing() {
       {charts.length > 0 ? (
         <div className="border-t border-nav-border bg-surface">
           <div className="mx-auto max-w-[720px] px-[18px] py-[clamp(48px,7vw,76px)] dt:px-8">
-            <div className="mb-[26px] flex flex-wrap items-baseline justify-between gap-2">
+            <div className="mb-[26px] text-center">
               <h2 className="font-display text-[clamp(24px,3.2vw,32px)] font-extrabold tracking-[-0.03em] text-text">
                 Most Collected All Time
               </h2>
-              <span className="font-body text-[12px] uppercase tracking-[0.1em] text-muted">
-                The Charts
-              </span>
             </div>
             {charts.map((album, i) => (
               <div

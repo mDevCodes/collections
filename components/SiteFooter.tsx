@@ -14,23 +14,23 @@ export default function SiteFooter() {
   if (isLoading || user || pathname !== "/") return null;
 
   return (
-    <footer style={{ background: "#141b2e" }}>
+    <footer className="bg-[#141b2e] dark:bg-surface">
       <div className="mx-auto flex max-w-[1160px] flex-wrap items-center justify-between gap-x-7 gap-y-4 px-[18px] py-5 dt:px-8">
-        <div className="flex flex-wrap items-center gap-5">
-          <span className="font-display text-[14px] font-bold tracking-[-0.01em] text-[#9aa3b8]">
+        <div className="flex flex-wrap items-center gap-4">
+          <span className="font-display text-[14px] font-bold tracking-[-0.01em] text-[#9aa3b8] dark:text-text">
             Record Collections
           </span>
           <div className="flex flex-wrap gap-[18px]">
             {links.map((label) => (
-              <span key={label} className="text-[13px] text-[#6f7a92]">
+              <span key={label} className="text-[13px] text-[#6f7a92] dark:text-text">
                 {label}
               </span>
             ))}
           </div>
         </div>
-        <p className="m-0 font-body text-[11px] tracking-[0.05em] text-[#6f7a92]">
+        <p className="m-0 font-body text-[11px] tracking-[0.05em] text-[#6f7a92] dark:text-text">
           © 2026 · Designed &amp; built by{" "}
-          <span className="font-semibold text-[#9aa3b8]">Grounded Workflows Co.</span>
+          <span className="font-semibold text-[#9aa3b8] dark:text-text">Grounded Workflows Co.</span>
         </p>
       </div>
     </footer>
