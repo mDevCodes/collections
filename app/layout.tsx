@@ -30,11 +30,20 @@ export const metadata: Metadata = {
     url: "/",
     siteName: "Record Collections",
     type: "website",
+    images: [
+      {
+        url: "/images/og-image.png",
+        width: 2400,
+        height: 1260,
+        alt: "Record Collections — every record you own, want, and love in one place",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title,
     description,
+    images: ["/images/og-image.png"],
   },
 };
 
